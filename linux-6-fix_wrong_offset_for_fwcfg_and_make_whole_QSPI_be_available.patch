@@ -1,0 +1,40 @@
+From f231e51c6a51dc4c96fdd6d06946b80cc0426451 Mon Sep 17 00:00:00 2001
+From: Andrey Rys <rys@lynxlynx.ru>
+Date: Sat, 25 Mar 2023 12:18:56 +0100
+Subject: [PATCH] jh7110.dtsi: fix wrong offset for fwcfg, and make whole QSPI
+ be available
+
+Fix typo in fwcfg offset (0xF00000 -> 0xF0000), so Linux uboot-tools
+can access fwcfg block to modify boot configuration from userspace.
+
+While we're at it, let's repartition QSPI into more handy style, by
+applying table from https://doc-en.rvspace.org/VisionFive2/Boot_UG/JH7110_SDK/boot_address_allocation.html.
+---
+ arch/riscv/boot/dts/starfive/jh7110.dtsi | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
+
+diff --git a/arch/riscv/boot/dts/starfive/jh7110.dtsi b/arch/riscv/boot/dts/starfive/jh7110.dtsi
+index 401a2cdc73d05..9148dae4862f4 100644
+--- a/arch/riscv/boot/dts/starfive/jh7110.dtsi
++++ b/arch/riscv/boot/dts/starfive/jh7110.dtsi
+@@ -357,11 +357,17 @@
+ 					spl@0 {
+ 						reg = <0x0 0x20000>;
+ 					};
++					env@f0000 {
++						reg = <0xf0000 0x10000>;
++					};
+ 					uboot@100000 {
+-						reg = <0x100000 0x300000>;
++						reg = <0x100000 0x400000>;
++					};
++					bootdata@500000 {
++						reg = <0x500000 0xb00000>;
+ 					};
+-					data@f00000 {
+-						reg = <0xf00000 0x100000>;
++					flashall@0 {
++						reg = <0x0 0x1000000>;
+ 					};
+ 				};
+ 			};

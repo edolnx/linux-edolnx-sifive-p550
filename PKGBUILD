@@ -1,46 +1,45 @@
-# Maintainer: Estela ad Astra <i@estela.cn>
+# Maintainer: Chaiwat Suttipongsakul <cwt@bashell.com>
 
-pkgbase=linux-515-starfive-visionfive2
-_variant=VF2 #5.15-VF2-xxx-x
-pkgver=2.10.4
-epoch=1 #Change to use ver from StarFive's SDK
-pkgrel=3
+pkgbase=linux-cwt-515-starfive-visionfive2
+_variant=cwt #5.15-VF2-xxx-x
+pkgver=3.0.4
+epoch=13 #Based on cwt image version
+pkgrel=1
 _tag=VF2_v${pkgver}
-_desc='Linux 5.15 for StarFive RISC-V VisionFive 2 Board'
+_desc='Linux 5.15.x (-cwt) for StarFive RISC-V VisionFive 2 Board'
 _srcname=linux-$_tag
 url="https://github.com/starfive-tech/linux/"
 arch=(riscv64)
 license=(GPL2)
-makedepends=(bc libelf pahole cpio perl tar xz)
+makedepends=(bc libelf pahole cpio perl tar xz clang lld)
 options=('!strip')
 source=("https://github.com/starfive-tech/linux/archive/refs/tags/${_tag}.tar.gz"
-  "0001-csr-fix.patch::https://github.com/torvalds/linux/commit/6df2a016c0c8a3d0933ef33dd192ea6606b115e3.diff"
-  "0002-realloc-fix.patch::https://github.com/torvalds/linux/commit/52a9dab6d892763b2a8334a568bd4e2c1a6fde66.diff"
-  "0003-constify-struct-dh.patch" #Modified from https://github.com/torvalds/linux/commit/215bebc8c6ac438c382a6a56bd2764a2d4e1da72.diff"
-  "0004-tda998x.patch"
-  "0005-pahole-flags.patch"
+  'linux-0-5.15.0-5.15.2.patch'
+  'linux-1-Revert-fbcon-Disable_accelerated_scrolling.patch'
+  'linux-2-fbcon-Add_option_to_enable_legacy_hardware_acceleration.patch'
+  'linux-3-riscv-zba_zbb.patch'
+  'linux-4-eswin_6600u-llvm.patch'
+  'linux-5-fix_CVE-2022-0847_DirtyPipe.patch'
+  'linux-6-fix_wrong_offset_for_fwcfg_and_make_whole_QSPI_be_available.patch'
+  'linux-7-constify_struct_dh_pointer_members.patch'
+  'linux-8-fix_broken_gpu-drm-i2c-tda998x.patch'
   'config'
   'linux.preset'
   '90-linux.hook')
 
-sha256sums=('5614f50f29fd4aa56525e0b002b5b03ef4109ef92484aab6747516efd2fb213b'
-            '3459b3799b7f9b7d6129ca8996c40d6a12f89127fe54b4af99ec9512b711dced'
-            '26c03a99bb0f90e334289726f041f454ca9c54f2bbd553bff7ee5ab042f64775'
-            '10d29b13ebccd1ea836e89338f6e88874dd6bb80cd01324527cc3ea7108cd65f'
-            'f3bc5d054cde348d9bcb2f7eb2be7c3421e60e55efdc2c849f8058ab8e6b9c7a'
-            '5d7e122d49915adae57e7453082860950dc62d599602438e2f1d0ca226710c9b'
-            'b365069f42eaaf78ef4155b8526f3b6165f5bfe1a0ad7489f785d2ce2da77436'
+sha256sums=('1f5445fe0e176e4731a2ef3ec92ec9dfdf7f87e838621084676c316818c5825e'
+            '3bd9dc1b0843b77b51b269ad2ca30895121d94a6993f149496a7c9a83e08b369'
+            '1582369c7a9365d98a03e08d0dbe8e0affc9417672f00aa57d6957ba559da878'
+            'e16e2f8eafe310a561a553d8e2af16af7a50d2c499221d0b9348a94aea571dfa'
+            'ef2196f0626265198454972dce9e873b620382465b4e66380de6506ccfc564d0'
+            'bcd1f14392af6adce2760c36a7d1b631c60a4f590bf1241934c401187ba1b40e'
+            '725875c1d8c7bf93cadfbceedcdfaa4062661b2deeb70a75852b87cff1d50831'
+            '95d40b97e61245095fa4dcfd67669d71d9a72c346a8ae22003352090e39ae1e1'
+            '01cf756c307a4aeda0b8c940340b75759f00ec712b9ccc217889c6ea8f94f59e'
+            'a5955ef6043e89080be902f9133f56fbeb78919fa7b45d4decb9191875217897'
+            '7293c522abb6ab757365eaa12c6400de812e2208b9f9fc6ca94bbafcb4f8e3c5'
             '57acae869144508c5600d6c8f41664f073f731c40cad2c58d2a1d55240495ddb'
             '5308a6dcabff290c627cab5c9db23c739eddbf7aa8a4984468ed59e6a5250702')
-
-if [ $(uname -m) != riscv64 ]; then
-  shopt -s expand_aliases
-  alias make="make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu-"
-  alias strip=riscv64-linux-gnu-strip
-  CFLAGS="-march=rv64gc -mabi=lp64d -O2 -pipe -fno-plt -fexceptions \
-          -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security \
-          -fstack-clash-protection"
-fi
 
 prepare() {
   cd $_srcname
@@ -60,17 +59,17 @@ prepare() {
 
   echo "Setting config..."
   cp ../config .config
-  make olddefconfig
+  make LLVM=1 olddefconfig
   #make starfive_visionfive2_defconfig
   cp .config ../../config.new
 
-  make -s kernelrelease >version
+  make LLVM=1 -s kernelrelease >version
   echo "Prepared $pkgbase version $(<version)"
 }
 
 build() {
   cd $_srcname
-  make all
+  make LLVM=1 all
 }
 
 _package() {
