@@ -4,7 +4,7 @@ pkgbase=linux-cwt-515-starfive-visionfive2
 _variant=cwt #5.15-VF2-xxx-x
 pkgver=3.0.4
 epoch=13 #Based on cwt image version
-pkgrel=2
+pkgrel=1
 _tag=VF2_v${pkgver}
 _desc='Linux 5.15.x (-cwt) for StarFive RISC-V VisionFive 2 Board'
 _srcname=linux-$_tag
@@ -50,7 +50,7 @@ sha256sums=('1f5445fe0e176e4731a2ef3ec92ec9dfdf7f87e838621084676c316818c5825e'
             '2492020565e8e6157876c2bee48af32dd3fc7967bd418fe6d2d9d9ea0bb72bf1'
             '800e2ca5970c1869282f99f19994c7ad2cbb05a6f3e059d692e30746f2c9b577'
             '5f1c56261d308e968a8dd161e4d5db25b378b73313749e0ca23eb2ef32af9dad'
-            'bb034d88b1de041822de7520775a9822b9424b049f5f8c72518a99224a5d1c6e')
+            'cc857516fdcb5a83c2609334289f7885acdf2262d2972b7ff2b08d78d12d70f3')
 
 prepare() {
   cd $_srcname
