@@ -8,6 +8,7 @@ pkgrel=1
 _tag=VF2_v${pkgver}
 _desc='Linux 5.15.x (-cwt) for StarFive RISC-V VisionFive 2 Board'
 _srcname=linux-$_tag
+_3rdpart=soft_3rdpart-$_tag
 url="https://github.com/starfive-tech/linux/"
 arch=(riscv64)
 license=(GPL2)
@@ -25,7 +26,10 @@ source=("https://github.com/starfive-tech/linux/archive/refs/tags/${_tag}.tar.gz
   'linux-8-fix_broken_gpu-drm-i2c-tda998x.patch'
   'config'
   'linux.preset'
-  '90-linux.hook')
+  '90-linux.hook'
+  "${_3rdpart}.tar.gz::https://github.com/starfive-tech/soft_3rdpart/archive/refs/tags/${_tag}.tar.gz"
+  'soft_3rdpart-0-correct_kernel_source_dir.patch'
+  'soft_3rdpart-1-use_clang_for_llvm.patch')
 
 sha256sums=('1f5445fe0e176e4731a2ef3ec92ec9dfdf7f87e838621084676c316818c5825e'
             '3bd9dc1b0843b77b51b269ad2ca30895121d94a6993f149496a7c9a83e08b369'
@@ -39,14 +43,16 @@ sha256sums=('1f5445fe0e176e4731a2ef3ec92ec9dfdf7f87e838621084676c316818c5825e'
             'a5955ef6043e89080be902f9133f56fbeb78919fa7b45d4decb9191875217897'
             '7293c522abb6ab757365eaa12c6400de812e2208b9f9fc6ca94bbafcb4f8e3c5'
             '57acae869144508c5600d6c8f41664f073f731c40cad2c58d2a1d55240495ddb'
-            '5308a6dcabff290c627cab5c9db23c739eddbf7aa8a4984468ed59e6a5250702')
+            '5308a6dcabff290c627cab5c9db23c739eddbf7aa8a4984468ed59e6a5250702'
+            '2770bc8be6d5abe3ba1c7f5dc23657368475006837a8d1dc0aec06a44392317f'
+            '2492020565e8e6157876c2bee48af32dd3fc7967bd418fe6d2d9d9ea0bb72bf1'
+            '800e2ca5970c1869282f99f19994c7ad2cbb05a6f3e059d692e30746f2c9b577')
 
 prepare() {
   cd $_srcname
 
   local src
-  for src in $(ls ../); do
-    [[ $src = *.patch ]] || continue
+  for src in $(ls ../linux-*.patch); do
     echo "Applying patch $src..."
     patch -Np1 <"../$src"
   done
@@ -60,16 +66,35 @@ prepare() {
   echo "Setting config..."
   cp ../config .config
   make LLVM=1 olddefconfig
-  #make starfive_visionfive2_defconfig
   cp .config ../../config.new
 
   make LLVM=1 -s kernelrelease >version
   echo "Prepared $pkgbase version $(<version)"
+
+  cd $srcdir/$_3rdpart
+
+  local src
+  for src in $(ls ../soft_3rdpart-*.patch); do
+    echo "Applying patch $src..."
+    patch -Np1 <"../$src"
+  done
 }
 
 build() {
   cd $_srcname
   make LLVM=1 all
+
+  # JPU
+  cd $srcdir/$_3rdpart/codaj12/jdi/linux/driver
+  make LLVM=1 KERNELDIR=$srcdir/$_srcname
+
+  # VENC
+  cd $srcdir/$_3rdpart/wave420l/code/vdi/linux/driver
+  make LLVM=1 KERNELDIR=$srcdir/$_srcname
+
+  # VDEC
+  cd $srcdir/$_3rdpart/wave511/code/vdi/linux/driver
+  make LLVM=1 KERNELDIR=$srcdir/$_srcname
 }
 
 _package() {
@@ -101,6 +126,37 @@ _package() {
   install -Dm644 ../linux.preset "${pkgdir}/etc/mkinitcpio.d/linux.preset"
   install -Dm644 ../90-linux.hook "${pkgdir}/usr/share/libalpm/hooks/90-linux.hook"
 
+  echo "Installing Soft 3rd Part..."
+  local _mod_extra="$modulesdir/extra"
+
+  #JPU
+  cd $srcdir/$_3rdpart/codaj12/jdi/linux/driver
+  install -Dm644 jpu.ko "$_mod_extra/jpu.ko"
+  $srcdir/$_srcname/scripts/sign-file sha1 \
+    $srcdir/$_srcname/certs/signing_key.pem \
+    $srcdir/$_srcname/certs/signing_key.x509 \
+    $_mod_extra/jpu.ko
+  xz --lzma2=dict=2MiB -f $_mod_extra/jpu.ko
+
+  # VENC
+  cd $srcdir/$_3rdpart/wave420l/code/vdi/linux/driver
+  install -Dm644 venc.ko "$_mod_extra/venc.ko"
+  $srcdir/$_srcname/scripts/sign-file sha1 \
+    $srcdir/$_srcname/certs/signing_key.pem \
+    $srcdir/$_srcname/certs/signing_key.x509 \
+    $_mod_extra/venc.ko
+  xz --lzma2=dict=2MiB -f $_mod_extra/venc.ko
+
+  # VDEC
+  cd $srcdir/$_3rdpart/wave511/code/vdi/linux/driver
+  install -Dm644 vdec.ko "$_mod_extra/vdec.ko"
+  $srcdir/$_srcname/scripts/sign-file sha1 \
+    $srcdir/$_srcname/certs/signing_key.pem \
+    $srcdir/$_srcname/certs/signing_key.x509 \
+    $_mod_extra/vdec.ko
+  xz --lzma2=dict=2MiB -f $_mod_extra/vdec.ko
+
+  depmod -a -b $pkgdir/usr $kernver
 }
 
 _package-headers() {
@@ -113,8 +169,7 @@ _package-headers() {
   local builddir="$pkgdir/usr/lib/modules/$(<version)/build"
 
   echo "Installing build files..."
-  install -Dt "$builddir" -m644 .config Makefile Module.symvers System.map \
-    version vmlinux
+  install -Dt "$builddir" -m644 .config Makefile Module.symvers System.map version
   install -Dt "$builddir/kernel" -m644 kernel/Makefile
   install -Dt "$builddir/arch/riscv" -m644 arch/riscv/Makefile
   cp -t "$builddir" -a scripts
