@@ -4,14 +4,14 @@ pkgbase=linux-cwt-515-starfive-visionfive2
 _variant=cwt #5.15-VF2-xxx-x
 pkgver=3.0.4
 epoch=13 #Based on cwt image version
-pkgrel=1
+pkgrel=2
 _tag=VF2_v${pkgver}
 _desc='Linux 5.15.x (-cwt) for StarFive RISC-V VisionFive 2 Board'
 _srcname=linux-$_tag
 _3rdpart=soft_3rdpart-$_tag
 url="https://github.com/starfive-tech/linux/"
 arch=(riscv64)
-license=(GPL2)
+license=('GPL2')
 makedepends=(bc libelf pahole cpio perl tar xz clang lld)
 options=('!strip')
 source=("https://github.com/starfive-tech/linux/archive/refs/tags/${_tag}.tar.gz"
@@ -29,7 +29,9 @@ source=("https://github.com/starfive-tech/linux/archive/refs/tags/${_tag}.tar.gz
   '90-linux.hook'
   "${_3rdpart}.tar.gz::https://github.com/starfive-tech/soft_3rdpart/archive/refs/tags/${_tag}.tar.gz"
   'soft_3rdpart-0-correct_kernel_source_dir.patch'
-  'soft_3rdpart-1-use_clang_for_llvm.patch')
+  'soft_3rdpart-1-use_clang_for_llvm.patch'
+  'soft_3rdpart-mkinitcpio.conf'
+  '91-soft_3rdpart.hook')
 
 sha256sums=('1f5445fe0e176e4731a2ef3ec92ec9dfdf7f87e838621084676c316818c5825e'
             '3bd9dc1b0843b77b51b269ad2ca30895121d94a6993f149496a7c9a83e08b369'
@@ -46,7 +48,9 @@ sha256sums=('1f5445fe0e176e4731a2ef3ec92ec9dfdf7f87e838621084676c316818c5825e'
             '5308a6dcabff290c627cab5c9db23c739eddbf7aa8a4984468ed59e6a5250702'
             '2770bc8be6d5abe3ba1c7f5dc23657368475006837a8d1dc0aec06a44392317f'
             '2492020565e8e6157876c2bee48af32dd3fc7967bd418fe6d2d9d9ea0bb72bf1'
-            '800e2ca5970c1869282f99f19994c7ad2cbb05a6f3e059d692e30746f2c9b577')
+            '800e2ca5970c1869282f99f19994c7ad2cbb05a6f3e059d692e30746f2c9b577'
+            '5f1c56261d308e968a8dd161e4d5db25b378b73313749e0ca23eb2ef32af9dad'
+            'bb034d88b1de041822de7520775a9822b9424b049f5f8c72518a99224a5d1c6e')
 
 prepare() {
   cd $_srcname
@@ -125,8 +129,17 @@ _package() {
 
   install -Dm644 ../linux.preset "${pkgdir}/etc/mkinitcpio.d/linux.preset"
   install -Dm644 ../90-linux.hook "${pkgdir}/usr/share/libalpm/hooks/90-linux.hook"
+}
+
+_package-soft_3rdpart() {
+  pkgdesc="The soft third part modules for the $_desc kernel"
+  license=('proprietary')
 
   echo "Installing Soft 3rd Part..."
+
+  cd $_srcname
+  local kernver="$(<version)"
+  local modulesdir="$pkgdir/usr/lib/modules/$kernver"
   local _mod_extra="$modulesdir/extra"
 
   #JPU
@@ -156,7 +169,9 @@ _package() {
     $_mod_extra/vdec.ko
   xz --lzma2=dict=2MiB -f $_mod_extra/vdec.ko
 
-  depmod -a -b $pkgdir/usr $kernver
+  install -Dm644 $srcdir/$_3rdpart/codaj12/LICENSE.txt "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+  install -Dm644 $srcdir/soft_3rdpart-mkinitcpio.conf "${pkgdir}/etc/mkinitcpio.conf.d/${pkgname}.conf"
+  install -Dm644 $srcdir/91-soft_3rdpart.hook "${pkgdir}/usr/share/libalpm/hooks/91-soft_3rdpart.hook"
 }
 
 _package-headers() {
@@ -236,7 +251,7 @@ _package-headers() {
   ln -sr "$builddir" "$pkgdir/usr/src/$pkgbase"
 }
 
-pkgname=("$pkgbase" "$pkgbase-headers")
+pkgname=("$pkgbase" "$pkgbase-soft_3rdpart" "$pkgbase-headers")
 for _p in "${pkgname[@]}"; do
   eval "package_$_p() {
     $(declare -f "_package${_p#$pkgbase}")
