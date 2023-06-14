@@ -4,7 +4,7 @@ pkgbase=linux-cwt-515-starfive-visionfive2
 _variant=cwt #5.15-VF2-xxx-x
 pkgver=3.0.4
 epoch=13 #Based on cwt image version
-pkgrel=1
+pkgrel=2
 _tag=VF2_v${pkgver}
 _desc='Linux 5.15.x (-cwt) for StarFive RISC-V VisionFive 2 Board'
 _srcname=linux-$_tag
@@ -45,12 +45,12 @@ sha256sums=('1f5445fe0e176e4731a2ef3ec92ec9dfdf7f87e838621084676c316818c5825e'
             'a5955ef6043e89080be902f9133f56fbeb78919fa7b45d4decb9191875217897'
             '7293c522abb6ab757365eaa12c6400de812e2208b9f9fc6ca94bbafcb4f8e3c5'
             '57acae869144508c5600d6c8f41664f073f731c40cad2c58d2a1d55240495ddb'
-            '5308a6dcabff290c627cab5c9db23c739eddbf7aa8a4984468ed59e6a5250702'
+            'a8f7b233de2ead3177d2623e7f2221b64f8fe872524a90cf82a791d2f508b0fe'
             '2770bc8be6d5abe3ba1c7f5dc23657368475006837a8d1dc0aec06a44392317f'
             '2492020565e8e6157876c2bee48af32dd3fc7967bd418fe6d2d9d9ea0bb72bf1'
             '800e2ca5970c1869282f99f19994c7ad2cbb05a6f3e059d692e30746f2c9b577'
             '5f1c56261d308e968a8dd161e4d5db25b378b73313749e0ca23eb2ef32af9dad'
-            'cc857516fdcb5a83c2609334289f7885acdf2262d2972b7ff2b08d78d12d70f3')
+            '17995f00e55a6afba85ab40d49af1a130b2624c44caf47f3b45d311dd8ca0de1')
 
 prepare() {
   cd $_srcname
@@ -69,10 +69,10 @@ prepare() {
 
   echo "Setting config..."
   cp ../config .config
-  make LLVM=1 olddefconfig
+  make LLVM=1 CC="clang -mcpu=sifive-u74 -mtune=sifive-7-series" olddefconfig
   cp .config ../../config.new
 
-  make LLVM=1 -s kernelrelease >version
+  make LLVM=1 CC="clang -mcpu=sifive-u74 -mtune=sifive-7-series" -s kernelrelease >version
   echo "Prepared $pkgbase version $(<version)"
 
   cd $srcdir/$_3rdpart
@@ -86,19 +86,19 @@ prepare() {
 
 build() {
   cd $_srcname
-  make LLVM=1 all
+  make LLVM=1 CC="clang -mcpu=sifive-u74 -mtune=sifive-7-series" all
 
   # JPU
   cd $srcdir/$_3rdpart/codaj12/jdi/linux/driver
-  make LLVM=1 KERNELDIR=$srcdir/$_srcname
+  make LLVM=1 CC="clang -mcpu=sifive-u74 -mtune=sifive-7-series" KERNELDIR=$srcdir/$_srcname
 
   # VENC
   cd $srcdir/$_3rdpart/wave420l/code/vdi/linux/driver
-  make LLVM=1 KERNELDIR=$srcdir/$_srcname
+  make LLVM=1 CC="clang -mcpu=sifive-u74 -mtune=sifive-7-series" KERNELDIR=$srcdir/$_srcname
 
   # VDEC
   cd $srcdir/$_3rdpart/wave511/code/vdi/linux/driver
-  make LLVM=1 KERNELDIR=$srcdir/$_srcname
+  make LLVM=1 CC="clang -mcpu=sifive-u74 -mtune=sifive-7-series" KERNELDIR=$srcdir/$_srcname
 }
 
 _package() {
