@@ -45,12 +45,12 @@ sha256sums=('68cc09da7fb91010df7048b6b970ea1a3883cef1f5f2022786dbdb8c1a3b52d5'
             'a5955ef6043e89080be902f9133f56fbeb78919fa7b45d4decb9191875217897'
             'c363a3dd5c995633459d2eebab01def9c0d31721e655417ab26c20a4d1321e11'
             '57acae869144508c5600d6c8f41664f073f731c40cad2c58d2a1d55240495ddb'
-            'a8f7b233de2ead3177d2623e7f2221b64f8fe872524a90cf82a791d2f508b0fe'
+            '81d8fee10e1d476fcbae631267b06155ae1b2036b3bfca3d8bbae34122e99b64'
             'a6306ae39d08b6f6385586ee4099d7731c022dd37f938885ba8538f65f87c548'
             '2492020565e8e6157876c2bee48af32dd3fc7967bd418fe6d2d9d9ea0bb72bf1'
             '800e2ca5970c1869282f99f19994c7ad2cbb05a6f3e059d692e30746f2c9b577'
             '5f1c56261d308e968a8dd161e4d5db25b378b73313749e0ca23eb2ef32af9dad'
-            '17995f00e55a6afba85ab40d49af1a130b2624c44caf47f3b45d311dd8ca0de1')
+            '7c26d722d6125a941275ea960eb7321c238f12670008555d29a33aac70c112c0')
 
 prepare() {
   cd $_srcname
@@ -133,6 +133,7 @@ _package() {
 
 _package-soft_3rdpart() {
   pkgdesc="The soft third part modules for the $_desc kernel"
+  depends=('visionfive2-img-gpu=1.19.6345021')
   license=('proprietary')
 
   echo "Installing Soft 3rd Part..."
