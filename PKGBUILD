@@ -2,8 +2,8 @@
 
 pkgbase=linux-cwt-515-starfive-visionfive2
 _variant=cwt #5.15-VF2-xxx-x
-pkgver=3.1.5
-epoch=14 #Based on cwt image version
+pkgver=3.4.5
+epoch=15 #Based on cwt image version
 pkgrel=1
 _tag=VF2_v${pkgver}
 _desc='Linux 5.15.x (-cwt) for StarFive RISC-V VisionFive 2 Board'
@@ -33,7 +33,7 @@ source=("https://github.com/starfive-tech/linux/archive/refs/tags/${_tag}.tar.gz
   'soft_3rdpart-mkinitcpio.conf'
   '91-soft_3rdpart.hook')
 
-sha256sums=('68cc09da7fb91010df7048b6b970ea1a3883cef1f5f2022786dbdb8c1a3b52d5'
+sha256sums=('7ee99e33b70cbb60a83365fc67ac3d43f22f8e12d3d436e737b7b542eb568ebb'
             '3bd9dc1b0843b77b51b269ad2ca30895121d94a6993f149496a7c9a83e08b369'
             '1582369c7a9365d98a03e08d0dbe8e0affc9417672f00aa57d6957ba559da878'
             'e16e2f8eafe310a561a553d8e2af16af7a50d2c499221d0b9348a94aea571dfa'
@@ -43,14 +43,14 @@ sha256sums=('68cc09da7fb91010df7048b6b970ea1a3883cef1f5f2022786dbdb8c1a3b52d5'
             '95d40b97e61245095fa4dcfd67669d71d9a72c346a8ae22003352090e39ae1e1'
             '01cf756c307a4aeda0b8c940340b75759f00ec712b9ccc217889c6ea8f94f59e'
             'a5955ef6043e89080be902f9133f56fbeb78919fa7b45d4decb9191875217897'
-            'c363a3dd5c995633459d2eebab01def9c0d31721e655417ab26c20a4d1321e11'
+            'd01fa69d3d2a155c3ca7f63f256c4bbe74820f91999abefdfaf153005cabdf15'
             '7601eb46dec607aa3e66bd756db8080302ef58b35cc35dd124e14c0bea2a8cb1'
-            '81d8fee10e1d476fcbae631267b06155ae1b2036b3bfca3d8bbae34122e99b64'
-            'a6306ae39d08b6f6385586ee4099d7731c022dd37f938885ba8538f65f87c548'
+            '0c85cc9a968034551ee0a82446798e74568e61cac3d959c68b898676cd7b3a50'
+            '6ce8becd708fff6071e9108a28fec38da200814ced863f90db3dcac7cdc2f5ab'
             '2492020565e8e6157876c2bee48af32dd3fc7967bd418fe6d2d9d9ea0bb72bf1'
             '800e2ca5970c1869282f99f19994c7ad2cbb05a6f3e059d692e30746f2c9b577'
             '5f1c56261d308e968a8dd161e4d5db25b378b73313749e0ca23eb2ef32af9dad'
-            '7c26d722d6125a941275ea960eb7321c238f12670008555d29a33aac70c112c0')
+            'faea99a82742697b4954789a5f7456b117e9008e5e9ae8035af3cb00a8b3d2a3')
 
 prepare() {
   cd $_srcname
