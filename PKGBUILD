@@ -31,7 +31,8 @@ source=("https://github.com/starfive-tech/linux/archive/refs/tags/${_tag}.tar.gz
   'soft_3rdpart-0-correct_kernel_source_dir.patch'
   'soft_3rdpart-1-use_clang_for_llvm.patch'
   'soft_3rdpart-mkinitcpio.conf'
-  '91-soft_3rdpart.hook')
+  '91-soft_3rdpart.hook',
+  '91-soft_3rdpart.rules')
 
 sha256sums=('7ee99e33b70cbb60a83365fc67ac3d43f22f8e12d3d436e737b7b542eb568ebb'
             '3bd9dc1b0843b77b51b269ad2ca30895121d94a6993f149496a7c9a83e08b369'
@@ -50,7 +51,8 @@ sha256sums=('7ee99e33b70cbb60a83365fc67ac3d43f22f8e12d3d436e737b7b542eb568ebb'
             '2492020565e8e6157876c2bee48af32dd3fc7967bd418fe6d2d9d9ea0bb72bf1'
             '800e2ca5970c1869282f99f19994c7ad2cbb05a6f3e059d692e30746f2c9b577'
             '5f1c56261d308e968a8dd161e4d5db25b378b73313749e0ca23eb2ef32af9dad'
-            '4a8959bb03f9cb2d48e68204bf6523aaf50f50c32876b733640f1921d7426827')
+            '4a8959bb03f9cb2d48e68204bf6523aaf50f50c32876b733640f1921d7426827'
+            '3d65589915b56de000ae7c93f5d7fbc9cf747891a45b69559ed92e03b95f692b')
 
 prepare() {
   cd $_srcname
@@ -173,6 +175,7 @@ _package-soft_3rdpart() {
   install -Dm644 $srcdir/$_3rdpart/codaj12/LICENSE.txt "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
   install -Dm644 $srcdir/soft_3rdpart-mkinitcpio.conf "${pkgdir}/etc/mkinitcpio.conf.d/${pkgname}.conf"
   install -Dm644 $srcdir/91-soft_3rdpart.hook "${pkgdir}/usr/share/libalpm/hooks/91-soft_3rdpart.hook"
+  install -Dm644 $srcdir/91-soft_3rdpart.rules "${pkgdir}/etc/udev/rules.d/91-soft_3rdpart.rules"
 }
 
 _package-headers() {
