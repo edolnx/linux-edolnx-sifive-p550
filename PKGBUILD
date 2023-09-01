@@ -2,9 +2,9 @@
 
 pkgbase=linux-cwt-515-starfive-visionfive2
 _variant=cwt #5.15-VF2-xxx-x
-pkgver=3.4.5
-epoch=15 #Based on cwt image version
-pkgrel=2
+pkgver=3.6.1
+epoch=16 #Based on cwt image version
+pkgrel=1
 _tag=VF2_v${pkgver}
 _desc='Linux 5.15.x (-cwt) for StarFive RISC-V VisionFive 2 Board'
 _srcname=linux-$_tag
@@ -30,11 +30,11 @@ source=("https://github.com/starfive-tech/linux/archive/refs/tags/${_tag}.tar.gz
   "${_3rdpart}.tar.gz::https://github.com/starfive-tech/soft_3rdpart/archive/refs/tags/${_tag}.tar.gz"
   'soft_3rdpart-0-correct_kernel_source_dir.patch'
   'soft_3rdpart-1-use_clang_for_llvm.patch'
-  'soft_3rdpart-mkinitcpio.conf'
-  '91-soft_3rdpart.hook',
+  'soft_3rdpart-modules.conf'
+  '91-soft_3rdpart.hook'
   '91-soft_3rdpart.rules')
 
-sha256sums=('7ee99e33b70cbb60a83365fc67ac3d43f22f8e12d3d436e737b7b542eb568ebb'
+sha256sums=('3ecca10f23e743382ee42f1d8b013c0e678616e24ad8d81b5000c42e26784d41'
             '3bd9dc1b0843b77b51b269ad2ca30895121d94a6993f149496a7c9a83e08b369'
             '1582369c7a9365d98a03e08d0dbe8e0affc9417672f00aa57d6957ba559da878'
             'e16e2f8eafe310a561a553d8e2af16af7a50d2c499221d0b9348a94aea571dfa'
@@ -44,14 +44,14 @@ sha256sums=('7ee99e33b70cbb60a83365fc67ac3d43f22f8e12d3d436e737b7b542eb568ebb'
             '2df1f4126f3b9820ab15410c324167a9382692f785cb8d8f1fa108b4a9b7ee34'
             '01cf756c307a4aeda0b8c940340b75759f00ec712b9ccc217889c6ea8f94f59e'
             'a5955ef6043e89080be902f9133f56fbeb78919fa7b45d4decb9191875217897'
-            'd01fa69d3d2a155c3ca7f63f256c4bbe74820f91999abefdfaf153005cabdf15'
+            'c0c05c076e45ddb7e31990f3140f795145f34492b81566d169da92d862806062'
             '7601eb46dec607aa3e66bd756db8080302ef58b35cc35dd124e14c0bea2a8cb1'
-            '0fc754069f4c54f0b9a69dad7791180dc17054944b46d2c4e4b40beed6eb8622'
-            '6ce8becd708fff6071e9108a28fec38da200814ced863f90db3dcac7cdc2f5ab'
+            'ceb733b33c2e23d7ace0db8f7d6df186a13666f9c51d0fb746eeaf9328bb563d'
+            '9d28bb37ebdc8cee898d1953c54aa7b7d581ff1aaf283b8b38619b03890098c4'
             '2492020565e8e6157876c2bee48af32dd3fc7967bd418fe6d2d9d9ea0bb72bf1'
             '800e2ca5970c1869282f99f19994c7ad2cbb05a6f3e059d692e30746f2c9b577'
-            '5f1c56261d308e968a8dd161e4d5db25b378b73313749e0ca23eb2ef32af9dad'
-            '4a8959bb03f9cb2d48e68204bf6523aaf50f50c32876b733640f1921d7426827'
+            'e3a433213762785a64af39f22cc6a82f9717c8eb3d27b846b20e21f290eb965c'
+            'c9496d65cadf86f9cca0267c99c68e93a0d7d14ac727a91deb0ea93f1454ddda'
             '3d65589915b56de000ae7c93f5d7fbc9cf747891a45b69559ed92e03b95f692b')
 
 prepare() {
@@ -162,6 +162,8 @@ _package-soft_3rdpart() {
     $srcdir/$_srcname/certs/signing_key.x509 \
     $_mod_extra/venc.ko
   xz --lzma2=dict=2MiB -f $_mod_extra/venc.ko
+  install -Dm644 $srcdir/$_3rdpart/wave420l/firmware/monet.bin "${pkgdir}/usr/lib/firmware/monet.bin"
+  install -Dm644 $srcdir/$_3rdpart/wave420l/code/cfg/encoder_defconfig.cfg "${pkgdir}/usr/lib/firmware/encoder_defconfig.cfg"
 
   # VDEC
   cd $srcdir/$_3rdpart/wave511/code/vdi/linux/driver
@@ -171,9 +173,17 @@ _package-soft_3rdpart() {
     $srcdir/$_srcname/certs/signing_key.x509 \
     $_mod_extra/vdec.ko
   xz --lzma2=dict=2MiB -f $_mod_extra/vdec.ko
+  install -Dm644 $srcdir/$_3rdpart/wave511/firmware/chagall.bin "${pkgdir}/usr/lib/firmware/chagall.bin"
+
+  # HiFi4
+  cd $srcdir/$_3rdpart/HiFi4
+  install -Dm644 sof-vf2.ri "${pkgdir}/usr/lib/firmware/sof/sof-vf2.ri"
+  install -Dm644 sof-vf2-wm8960-aec.tplg "${pkgdir}/usr/lib/firmware/sof/sof-vf2-wm8960-aec.tplg"
+  install -Dm644 sof-vf2-wm8960-mixer.tplg "${pkgdir}/usr/lib/firmware/sof/sof-vf2-wm8960-mixer.tplg"
+  install -Dm644 sof-vf2-wm8960.tplg "${pkgdir}/usr/lib/firmware/sof/sof-vf2-wm8960.tplg"
 
   install -Dm644 $srcdir/$_3rdpart/codaj12/LICENSE.txt "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
-  install -Dm644 $srcdir/soft_3rdpart-mkinitcpio.conf "${pkgdir}/etc/mkinitcpio.conf.d/${pkgname}.conf"
+  install -Dm644 $srcdir/soft_3rdpart-modules.conf "${pkgdir}/etc/modprobe.d/soft_3rdpart-modules.conf"
   install -Dm644 $srcdir/91-soft_3rdpart.hook "${pkgdir}/usr/share/libalpm/hooks/91-soft_3rdpart.hook"
   install -Dm644 $srcdir/91-soft_3rdpart.rules "${pkgdir}/etc/udev/rules.d/91-soft_3rdpart.rules"
 }
