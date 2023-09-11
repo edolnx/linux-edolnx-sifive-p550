@@ -4,7 +4,7 @@ pkgbase=linux-cwt-515-starfive-visionfive2
 _variant=cwt #5.15-VF2-xxx-x
 pkgver=3.6.1
 epoch=16 #Based on cwt image version
-pkgrel=2
+pkgrel=3
 _tag=VF2_v${pkgver}
 _desc='Linux 5.15.x (-cwt) for StarFive RISC-V VisionFive 2 Board'
 _srcname=linux-$_tag
@@ -44,14 +44,14 @@ sha256sums=('3ecca10f23e743382ee42f1d8b013c0e678616e24ad8d81b5000c42e26784d41'
             '2df1f4126f3b9820ab15410c324167a9382692f785cb8d8f1fa108b4a9b7ee34'
             '01cf756c307a4aeda0b8c940340b75759f00ec712b9ccc217889c6ea8f94f59e'
             'a5955ef6043e89080be902f9133f56fbeb78919fa7b45d4decb9191875217897'
-            'cb82ff268786b021ee902fe948d32f0c0439e062fe346861d879e1880db2ae0b'
+            '84d2b4e61dbd717defd96c6e3ea13fc0ccfd95c05fb65a915414a755c9d44970'
             '7601eb46dec607aa3e66bd756db8080302ef58b35cc35dd124e14c0bea2a8cb1'
-            '55ccd5973cf58cd8d3cad5977add7400443958bbefdef057e8c98d860b34eb01'
+            'a4f0dba56cb2f6d04703a1ab3b7611d0040a076caf3edac9fb9d1632fe6bfe09'
             '9d28bb37ebdc8cee898d1953c54aa7b7d581ff1aaf283b8b38619b03890098c4'
             '2492020565e8e6157876c2bee48af32dd3fc7967bd418fe6d2d9d9ea0bb72bf1'
             '800e2ca5970c1869282f99f19994c7ad2cbb05a6f3e059d692e30746f2c9b577'
             'e3a433213762785a64af39f22cc6a82f9717c8eb3d27b846b20e21f290eb965c'
-            '3a1afe26c02449bb85358812636b20cbfb268c88d5ef24034d9bc9ec3a449cc1'
+            '37ce8795222c449aef11ce84d4b0eb85f0207a0814e1e7cd94fce0269ff1a5e7'
             '3d65589915b56de000ae7c93f5d7fbc9cf747891a45b69559ed92e03b95f692b')
 
 prepare() {
@@ -206,8 +206,18 @@ _package-headers() {
   # required when DEBUG_INFO_BTF_MODULES is enabled
   cp --parents -r -t "$builddir/" tools/bpf/resolve_btfids
 
+  echo "Installing VDSO files..."
+  cp -a --parents -r -t "$builddir" arch/riscv/kernel/vdso/*
+  cp -a --parents -r -t "$builddir" lib/vdso/*
+  chmod -R g+w "$builddir/arch/riscv/kernel/vdso"
+
+  echo "Installing certificate files..."
+  install -Dt "$builddir/certs" -m640 certs/*.pem
+  install -Dt "$builddir/certs" -m640 certs/*.x509
+
   echo "Installing headers..."
   cp -t "$builddir" -a include
+  chmod -R g+w "$builddir/include/generated"
   cp -t "$builddir/arch/riscv" -a arch/riscv/include
   install -Dt "$builddir/arch/riscv/kernel" -m644 arch/riscv/kernel/asm-offsets.s
 
