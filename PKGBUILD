@@ -2,9 +2,9 @@
 
 pkgbase=linux-cwt-515-starfive-visionfive2
 _variant=cwt #5.15-VF2-xxx-x
-pkgver=3.6.1
-epoch=16 #Based on cwt image version
-pkgrel=4
+pkgver=3.7.5
+epoch=17 #Based on cwt image version
+pkgrel=1
 _tag=VF2_v${pkgver}
 _desc='Linux 5.15.x (-cwt) for StarFive RISC-V VisionFive 2 Board'
 _srcname=linux-$_tag
@@ -34,7 +34,7 @@ source=("https://github.com/starfive-tech/linux/archive/refs/tags/${_tag}.tar.gz
   '91-soft_3rdpart.hook'
   '91-soft_3rdpart.rules')
 
-sha256sums=('3ecca10f23e743382ee42f1d8b013c0e678616e24ad8d81b5000c42e26784d41'
+sha256sums=('675243522bf991f3bf6fafa2ff1271bffae4ec514f5fbbf350571cf3f0617e05'
             '3bd9dc1b0843b77b51b269ad2ca30895121d94a6993f149496a7c9a83e08b369'
             '1582369c7a9365d98a03e08d0dbe8e0affc9417672f00aa57d6957ba559da878'
             'e16e2f8eafe310a561a553d8e2af16af7a50d2c499221d0b9348a94aea571dfa'
@@ -44,14 +44,14 @@ sha256sums=('3ecca10f23e743382ee42f1d8b013c0e678616e24ad8d81b5000c42e26784d41'
             '2df1f4126f3b9820ab15410c324167a9382692f785cb8d8f1fa108b4a9b7ee34'
             '01cf756c307a4aeda0b8c940340b75759f00ec712b9ccc217889c6ea8f94f59e'
             'a5955ef6043e89080be902f9133f56fbeb78919fa7b45d4decb9191875217897'
-            '547ff19f325c1b90e055f2691d49094acb44f7ae41770d596a1bc33b1c1c5373'
+            '00a72a4a0b91d56d85f54ec1525f245f3772d779bfa2f35e132a77d6cd93b385'
             '7601eb46dec607aa3e66bd756db8080302ef58b35cc35dd124e14c0bea2a8cb1'
-            'afb9addf9b245494774c91659037367881e07d54129570146a817bb99e86cd29'
-            '9d28bb37ebdc8cee898d1953c54aa7b7d581ff1aaf283b8b38619b03890098c4'
+            '63a6e0a48f8b94cac85a61358bad53b9f3897f5b5b242d380e56f076f052cfcb'
+            '5a599192cf634d2105443f1ff7fcd61b596af100af4f4f24eec2d9bc98def5c5'
             '2492020565e8e6157876c2bee48af32dd3fc7967bd418fe6d2d9d9ea0bb72bf1'
             '800e2ca5970c1869282f99f19994c7ad2cbb05a6f3e059d692e30746f2c9b577'
             'e3a433213762785a64af39f22cc6a82f9717c8eb3d27b846b20e21f290eb965c'
-            '2824bb5e2aa4bffdc101709e6404210904ca2f27412a792a39e8f40200850ac3'
+            '5393644e15324d5254868a6e41e19baa63c1ab940887aee18e9e93037575b67b'
             '3d65589915b56de000ae7c93f5d7fbc9cf747891a45b69559ed92e03b95f692b')
 
 prepare() {
