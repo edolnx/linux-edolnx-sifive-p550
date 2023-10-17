@@ -54,6 +54,12 @@ sha256sums=('675243522bf991f3bf6fafa2ff1271bffae4ec514f5fbbf350571cf3f0617e05'
             '5393644e15324d5254868a6e41e19baa63c1ab940887aee18e9e93037575b67b'
             '3d65589915b56de000ae7c93f5d7fbc9cf747891a45b69559ed92e03b95f692b')
 
+if [ "$(uname -m)" = "riscv64" ]; then
+  _target=""
+else
+  _target="--target=riscv64"
+fi
+
 prepare() {
   cd $_srcname
 
@@ -71,10 +77,10 @@ prepare() {
 
   echo "Setting config..."
   cp ../config .config
-  make -j $(nproc) LLVM=1 ARCH=riscv CC="clang --target=riscv64 -mcpu=sifive-u74 -mtune=sifive-7-series" olddefconfig
+  make -j $(nproc) LLVM=1 ARCH=riscv CC="clang ${_target} -mcpu=sifive-u74 -mtune=sifive-7-series" olddefconfig
   cp .config ../../config.new
 
-  make -j $(nproc) LLVM=1 ARCH=riscv CC="clang --target=riscv64 -mcpu=sifive-u74 -mtune=sifive-7-series" -s kernelrelease >version
+  make -j $(nproc) LLVM=1 ARCH=riscv CC="clang ${_target} -mcpu=sifive-u74 -mtune=sifive-7-series" -s kernelrelease >version
   echo "Prepared $pkgbase version $(<version)"
 
   cd $srcdir/$_3rdpart
@@ -88,19 +94,19 @@ prepare() {
 
 build() {
   cd $_srcname
-  make -j $(nproc) LLVM=1 ARCH=riscv CC="clang --target=riscv64 -mcpu=sifive-u74 -mtune=sifive-7-series" all
+  make -j $(nproc) LLVM=1 ARCH=riscv CC="clang ${_target} -mcpu=sifive-u74 -mtune=sifive-7-series" all
 
   # JPU
   cd $srcdir/$_3rdpart/codaj12/jdi/linux/driver
-  make -j $(nproc) LLVM=1 ARCH=riscv CC="clang --target=riscv64 -mcpu=sifive-u74 -mtune=sifive-7-series" KERNELDIR=$srcdir/$_srcname
+  make -j $(nproc) LLVM=1 ARCH=riscv CC="clang ${_target} -mcpu=sifive-u74 -mtune=sifive-7-series" KERNELDIR=$srcdir/$_srcname
 
   # VENC
   cd $srcdir/$_3rdpart/wave420l/code/vdi/linux/driver
-  make -j $(nproc) LLVM=1 ARCH=riscv CC="clang --target=riscv64 -mcpu=sifive-u74 -mtune=sifive-7-series" KERNELDIR=$srcdir/$_srcname
+  make -j $(nproc) LLVM=1 ARCH=riscv CC="clang ${_target} -mcpu=sifive-u74 -mtune=sifive-7-series" KERNELDIR=$srcdir/$_srcname
 
   # VDEC
   cd $srcdir/$_3rdpart/wave511/code/vdi/linux/driver
-  make -j $(nproc) LLVM=1 ARCH=riscv CC="clang --target=riscv64 -mcpu=sifive-u74 -mtune=sifive-7-series" KERNELDIR=$srcdir/$_srcname
+  make -j $(nproc) LLVM=1 ARCH=riscv CC="clang ${_target} -mcpu=sifive-u74 -mtune=sifive-7-series" KERNELDIR=$srcdir/$_srcname
 }
 
 _package() {
