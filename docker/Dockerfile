@@ -25,7 +25,7 @@ RUN pacman -Syu --noconfirm \
       llvm \
  && pacman -Sc --noconfirm
 
-RUN groupadd cwt \
- && useradd -g cwt -G root -m cwt
+RUN groupadd user \
+ && useradd -g user -G root -m user
 
 ADD makepkg.conf /etc/makepkg.conf
