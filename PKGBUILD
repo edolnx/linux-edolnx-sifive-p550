@@ -71,10 +71,10 @@ prepare() {
 
   echo "Setting config..."
   cp ../config .config
-  make LLVM=1 CC="clang -mcpu=sifive-u74 -mtune=sifive-7-series" olddefconfig
+  make -j $(nproc) LLVM=1 ARCH=riscv CC="clang --target=riscv64 -mcpu=sifive-u74 -mtune=sifive-7-series" olddefconfig
   cp .config ../../config.new
 
-  make LLVM=1 CC="clang -mcpu=sifive-u74 -mtune=sifive-7-series" -s kernelrelease >version
+  make -j $(nproc) LLVM=1 ARCH=riscv CC="clang --target=riscv64 -mcpu=sifive-u74 -mtune=sifive-7-series" -s kernelrelease >version
   echo "Prepared $pkgbase version $(<version)"
 
   cd $srcdir/$_3rdpart
@@ -88,19 +88,19 @@ prepare() {
 
 build() {
   cd $_srcname
-  make LLVM=1 CC="clang -mcpu=sifive-u74 -mtune=sifive-7-series" all
+  make -j $(nproc) LLVM=1 ARCH=riscv CC="clang --target=riscv64 -mcpu=sifive-u74 -mtune=sifive-7-series" all
 
   # JPU
   cd $srcdir/$_3rdpart/codaj12/jdi/linux/driver
-  make LLVM=1 CC="clang -mcpu=sifive-u74 -mtune=sifive-7-series" KERNELDIR=$srcdir/$_srcname
+  make -j $(nproc) LLVM=1 ARCH=riscv CC="clang --target=riscv64 -mcpu=sifive-u74 -mtune=sifive-7-series" KERNELDIR=$srcdir/$_srcname
 
   # VENC
   cd $srcdir/$_3rdpart/wave420l/code/vdi/linux/driver
-  make LLVM=1 CC="clang -mcpu=sifive-u74 -mtune=sifive-7-series" KERNELDIR=$srcdir/$_srcname
+  make -j $(nproc) LLVM=1 ARCH=riscv CC="clang --target=riscv64 -mcpu=sifive-u74 -mtune=sifive-7-series" KERNELDIR=$srcdir/$_srcname
 
   # VDEC
   cd $srcdir/$_3rdpart/wave511/code/vdi/linux/driver
-  make LLVM=1 CC="clang -mcpu=sifive-u74 -mtune=sifive-7-series" KERNELDIR=$srcdir/$_srcname
+  make -j $(nproc) LLVM=1 ARCH=riscv CC="clang --target=riscv64 -mcpu=sifive-u74 -mtune=sifive-7-series" KERNELDIR=$srcdir/$_srcname
 }
 
 _package() {
@@ -120,11 +120,11 @@ _package() {
   install -Dm644 "arch/riscv/boot/Image.gz" "$pkgdir/boot/vmlinuz"
 
   echo "Installing modules..."
-  make INSTALL_MOD_PATH="$pkgdir/usr" INSTALL_MOD_STRIP=1 modules_install
+  make -j $(nproc) LLVM=1 ARCH=riscv INSTALL_MOD_PATH="$pkgdir/usr" INSTALL_MOD_STRIP=1 modules_install
 
   echo "Installing dtbs..."
-  make INSTALL_DTBS_PATH="$pkgdir/usr/share/dtbs/$kernver" dtbs_install
-  make INSTALL_DTBS_PATH="$pkgdir/boot/dtbs/" dtbs_install
+  make -j $(nproc) LLVM=1 ARCH=riscv INSTALL_DTBS_PATH="$pkgdir/usr/share/dtbs/$kernver" dtbs_install
+  make -j $(nproc) LLVM=1 ARCH=riscv INSTALL_DTBS_PATH="$pkgdir/boot/dtbs/" dtbs_install
 
   # remove build links
   rm "$modulesdir"/build
@@ -260,13 +260,13 @@ _package-headers() {
   while read -rd '' file; do
     case "$(file -bi "$file")" in
     application/x-sharedlib\;*) # Libraries (.so)
-      strip -v $STRIP_SHARED "$file" ;;
+      llvm-strip -v $STRIP_SHARED "$file" ;;
     application/x-archive\;*) # Libraries (.a)
-      strip -v $STRIP_STATIC "$file" ;;
+      llvm-strip -v $STRIP_STATIC "$file" ;;
     application/x-executable\;*) # Binaries
-      strip -v $STRIP_BINARIES "$file" ;;
+      llvm-strip -v $STRIP_BINARIES "$file" ;;
     application/x-pie-executable\;*) # Relocatable binaries
-      strip -v $STRIP_SHARED "$file" ;;
+      llvm-strip -v $STRIP_SHARED "$file" ;;
     esac
   done < <(find "$builddir" -type f -perm -u+x ! -name vmlinux -print0)
 
