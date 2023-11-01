@@ -2,8 +2,8 @@
 
 pkgbase=linux-cwt-515-starfive-visionfive2
 _variant=cwt #5.15-VF2-xxx-x
-pkgver=3.7.5
-epoch=17 #Based on cwt image version
+pkgver=3.8.2
+epoch=18 #Based on cwt image version
 pkgrel=1
 _tag=VF2_v${pkgver}
 _desc='Linux 5.15.x (-cwt) for StarFive RISC-V VisionFive 2 Board'
@@ -21,7 +21,6 @@ source=("https://github.com/starfive-tech/linux/archive/refs/tags/${_tag}.tar.gz
   'linux-3-riscv-zba_zbb.patch'
   'linux-4-eswin_6600u-llvm.patch'
   'linux-5-fix_CVE-2022-0847_DirtyPipe.patch'
-  'linux-6-fix_qspi_partitions_according_to_datasheet.patch'
   'linux-7-constify_struct_dh_pointer_members.patch'
   'linux-8-fix_broken_gpu-drm-i2c-tda998x.patch'
   'config'
@@ -34,24 +33,23 @@ source=("https://github.com/starfive-tech/linux/archive/refs/tags/${_tag}.tar.gz
   '91-soft_3rdpart.hook'
   '91-soft_3rdpart.rules')
 
-sha256sums=('675243522bf991f3bf6fafa2ff1271bffae4ec514f5fbbf350571cf3f0617e05'
+sha256sums=('b128a852755d1329c3082ca70a153d4a65ab52e597cf06cbe188c139392cc7e9'
             '3bd9dc1b0843b77b51b269ad2ca30895121d94a6993f149496a7c9a83e08b369'
             '1582369c7a9365d98a03e08d0dbe8e0affc9417672f00aa57d6957ba559da878'
             'e16e2f8eafe310a561a553d8e2af16af7a50d2c499221d0b9348a94aea571dfa'
             'ef2196f0626265198454972dce9e873b620382465b4e66380de6506ccfc564d0'
             'bcd1f14392af6adce2760c36a7d1b631c60a4f590bf1241934c401187ba1b40e'
             '725875c1d8c7bf93cadfbceedcdfaa4062661b2deeb70a75852b87cff1d50831'
-            '2df1f4126f3b9820ab15410c324167a9382692f785cb8d8f1fa108b4a9b7ee34'
             '01cf756c307a4aeda0b8c940340b75759f00ec712b9ccc217889c6ea8f94f59e'
             'a5955ef6043e89080be902f9133f56fbeb78919fa7b45d4decb9191875217897'
-            '00a72a4a0b91d56d85f54ec1525f245f3772d779bfa2f35e132a77d6cd93b385'
+            '221bfcba5c4aa1763a9fb1e60b69a81eef9fc4941d6a57778e3bfd4da69700fc'
             '7601eb46dec607aa3e66bd756db8080302ef58b35cc35dd124e14c0bea2a8cb1'
-            '63a6e0a48f8b94cac85a61358bad53b9f3897f5b5b242d380e56f076f052cfcb'
-            '5a599192cf634d2105443f1ff7fcd61b596af100af4f4f24eec2d9bc98def5c5'
+            '01a398a1a50ecd77bc7edf1b6cc26cb0cde2f79e5bf926191b7d0d0f9ae62833'
+            'f375ac687a501e756f5d37939f9791334e8e6c2a2b41d4a2b28e10b2b301de05'
             '2492020565e8e6157876c2bee48af32dd3fc7967bd418fe6d2d9d9ea0bb72bf1'
             '800e2ca5970c1869282f99f19994c7ad2cbb05a6f3e059d692e30746f2c9b577'
             'e3a433213762785a64af39f22cc6a82f9717c8eb3d27b846b20e21f290eb965c'
-            '5393644e15324d5254868a6e41e19baa63c1ab940887aee18e9e93037575b67b'
+            'b2efa4d2ff82fb0274a14cd455d241e503ce86329c60dfd84cfc945d9925312a'
             '3d65589915b56de000ae7c93f5d7fbc9cf747891a45b69559ed92e03b95f692b')
 
 if [ "$(uname -m)" = "riscv64" ]; then

@@ -23,6 +23,7 @@ RUN pacman -Syu --noconfirm \
       fakeroot \
       patch \
       llvm \
+      pacman-contrib \
  && pacman -Sc --noconfirm
 
 RUN groupadd user \

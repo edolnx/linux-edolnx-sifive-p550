@@ -8,4 +8,4 @@ Target = linux-cwt-515-starfive-visionfive2-soft_3rdpart
 [Action]
 Description = Updating linux initcpios...
 When = PostTransaction
-Exec = /bin/bash -c "/usr/bin/depmod -a 5.15.2-cwt-3.7.5-1"
+Exec = /bin/bash -c "/usr/bin/depmod -a 5.15.2-cwt-3.8.2-1"
