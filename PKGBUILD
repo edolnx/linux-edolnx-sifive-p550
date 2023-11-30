@@ -1,11 +1,12 @@
 # Maintainer: Chaiwat Suttipongsakul <cwt@bashell.com>
 
-pkgbase=linux-cwt-515-starfive-visionfive2
+pkgbase=linux-cwt-515-starfive-vf2
+_old_pkgbase=linux-cwt-515-starfive-visionfive2
 _variant=cwt #5.15-VF2-xxx-x
-pkgver=3.8.2
-epoch=18 #Based on cwt image version
+pkgver=3.9.3
+epoch=19 #Based on cwt image version
 pkgrel=1
-_tag=VF2_v${pkgver}
+_tag=JH7110_VF2_515_v${pkgver}
 _desc='Linux 5.15.x (-cwt) for StarFive RISC-V VisionFive 2 Board'
 _srcname=linux-$_tag
 _3rdpart=soft_3rdpart-$_tag
@@ -33,7 +34,7 @@ source=("https://github.com/starfive-tech/linux/archive/refs/tags/${_tag}.tar.gz
   '91-soft_3rdpart.hook'
   '91-soft_3rdpart.rules')
 
-sha256sums=('b128a852755d1329c3082ca70a153d4a65ab52e597cf06cbe188c139392cc7e9'
+sha256sums=('4547ccfb75009dff67ef9adfc99521b344acd5e6e509271c44abaef9686efae3'
             '3bd9dc1b0843b77b51b269ad2ca30895121d94a6993f149496a7c9a83e08b369'
             '1582369c7a9365d98a03e08d0dbe8e0affc9417672f00aa57d6957ba559da878'
             'e16e2f8eafe310a561a553d8e2af16af7a50d2c499221d0b9348a94aea571dfa'
@@ -44,12 +45,12 @@ sha256sums=('b128a852755d1329c3082ca70a153d4a65ab52e597cf06cbe188c139392cc7e9'
             'a5955ef6043e89080be902f9133f56fbeb78919fa7b45d4decb9191875217897'
             '221bfcba5c4aa1763a9fb1e60b69a81eef9fc4941d6a57778e3bfd4da69700fc'
             '7601eb46dec607aa3e66bd756db8080302ef58b35cc35dd124e14c0bea2a8cb1'
-            '01a398a1a50ecd77bc7edf1b6cc26cb0cde2f79e5bf926191b7d0d0f9ae62833'
-            'f375ac687a501e756f5d37939f9791334e8e6c2a2b41d4a2b28e10b2b301de05'
+            'cd9c679cf2a55b2b53c27b48f984e7a28e862171ef4db3ba38444ece18a29ce2'
+            '3d94fbc3e8842fb1043ebd3b7c6ca4ed24aee7fa52fe33688578dd83c090c294'
             '2492020565e8e6157876c2bee48af32dd3fc7967bd418fe6d2d9d9ea0bb72bf1'
             '800e2ca5970c1869282f99f19994c7ad2cbb05a6f3e059d692e30746f2c9b577'
             'e3a433213762785a64af39f22cc6a82f9717c8eb3d27b846b20e21f290eb965c'
-            'b2efa4d2ff82fb0274a14cd455d241e503ce86329c60dfd84cfc945d9925312a'
+            '8c16f19b0b589cd2441e8df1ed288a7a443eac893619aaa54d80b268e53ce338'
             '3d65589915b56de000ae7c93f5d7fbc9cf747891a45b69559ed92e03b95f692b')
 
 if [ "$(uname -m)" = "riscv64" ]; then
@@ -112,7 +113,7 @@ _package() {
   depends=(coreutils kmod mkinitcpio)
   optdepends=('wireless-regdb: to set the correct wireless channels of your country'
     'linux-firmware: firmware images needed for some devices')
-  provides=("linux=${pkgver}" "WIREGUARD-MODULE")
+  provides=("linux=${pkgver}" "WIREGUARD-MODULE" "${_old_pkgbase}")
   conflicts=('linux')
 
   cd $_srcname
@@ -141,6 +142,8 @@ _package-soft_3rdpart() {
   pkgdesc="The soft third part modules for the $_desc kernel"
   depends=('visionfive2-img-gpu=1.19.6345021')
   license=('proprietary')
+  provides=("${_old_pkgbase}-soft_3rdpart")
+  conflicts=("${_old_pkgbase}-soft_3rdpart")
 
   echo "Installing Soft 3rd Part..."
 
@@ -195,7 +198,7 @@ _package-soft_3rdpart() {
 _package-headers() {
   pkgdesc="Headers and scripts for building modules for the $_desc kernel"
   depends=(pahole)
-  provides=("linux-headers=${pkgver}")
+  provides=("linux-headers=${pkgver}" "${_old_pkgbase}-headers")
   conflicts=('linux-headers')
 
   cd $_srcname
