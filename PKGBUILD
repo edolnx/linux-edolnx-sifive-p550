@@ -140,7 +140,7 @@ _package() {
 
 _package-soft_3rdpart() {
   pkgdesc="The soft third part modules for the $_desc kernel"
-  depends=('visionfive2-img-gpu=1.19.6345021')
+  depends=('img-gpu-vf2=1.19.6345021')
   license=('proprietary')
   provides=("${_old_pkgbase}-soft_3rdpart")
   conflicts=("${_old_pkgbase}-soft_3rdpart")
