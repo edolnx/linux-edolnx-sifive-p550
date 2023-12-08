@@ -13,7 +13,7 @@ _3rdpart=soft_3rdpart-$_tag
 url="https://github.com/starfive-tech/linux/"
 arch=(riscv64)
 license=('GPL2')
-makedepends=(bc libelf pahole cpio perl tar xz clang lld)
+makedepends=(bc libelf pahole cpio perl tar xz clang lld llvm)
 options=('!strip')
 source=("https://github.com/starfive-tech/linux/archive/refs/tags/${_tag}.tar.gz"
   'linux-0-5.15.0-5.15.2.patch'
