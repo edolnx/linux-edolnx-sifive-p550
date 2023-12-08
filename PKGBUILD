@@ -5,7 +5,7 @@ _old_pkgbase=linux-cwt-515-starfive-visionfive2
 _variant=cwt #5.15-VF2-xxx-x
 pkgver=3.9.3
 epoch=19 #Based on cwt image version
-pkgrel=1
+pkgrel=2
 _tag=JH7110_VF2_515_v${pkgver}
 _desc='Linux 5.15.x (-cwt) for StarFive RISC-V VisionFive 2 Board'
 _srcname=linux-$_tag
@@ -13,7 +13,7 @@ _3rdpart=soft_3rdpart-$_tag
 url="https://github.com/starfive-tech/linux/"
 arch=(riscv64)
 license=('GPL2')
-makedepends=(bc libelf pahole cpio perl tar xz clang lld)
+makedepends=(bc libelf pahole cpio perl tar xz clang lld llvm)
 options=('!strip')
 source=("https://github.com/starfive-tech/linux/archive/refs/tags/${_tag}.tar.gz"
   'linux-0-5.15.0-5.15.2.patch'
@@ -45,12 +45,12 @@ sha256sums=('4547ccfb75009dff67ef9adfc99521b344acd5e6e509271c44abaef9686efae3'
             'a5955ef6043e89080be902f9133f56fbeb78919fa7b45d4decb9191875217897'
             '221bfcba5c4aa1763a9fb1e60b69a81eef9fc4941d6a57778e3bfd4da69700fc'
             '7601eb46dec607aa3e66bd756db8080302ef58b35cc35dd124e14c0bea2a8cb1'
-            'cd9c679cf2a55b2b53c27b48f984e7a28e862171ef4db3ba38444ece18a29ce2'
+            'b76ad11bafa36bb10c010daa8a11760cf55e5d80a40e59044c200e09b494415d'
             '3d94fbc3e8842fb1043ebd3b7c6ca4ed24aee7fa52fe33688578dd83c090c294'
             '2492020565e8e6157876c2bee48af32dd3fc7967bd418fe6d2d9d9ea0bb72bf1'
             '800e2ca5970c1869282f99f19994c7ad2cbb05a6f3e059d692e30746f2c9b577'
             'e3a433213762785a64af39f22cc6a82f9717c8eb3d27b846b20e21f290eb965c'
-            '8c16f19b0b589cd2441e8df1ed288a7a443eac893619aaa54d80b268e53ce338'
+            '63a907feac0c431010ecb5029742f933e667028f5d4588c1c6855d6249666a81'
             '3d65589915b56de000ae7c93f5d7fbc9cf747891a45b69559ed92e03b95f692b')
 
 if [ "$(uname -m)" = "riscv64" ]; then
@@ -252,6 +252,9 @@ _package-headers() {
     echo "Removing $(basename "$arch")"
     rm -r "$arch"
   done
+
+  echo "Installing RAS from x86..."
+  install -Dt "$builddir/arch/x86/ras"  -m644 arch/x86/ras/Kconfig
 
   echo "Removing documentation..."
   rm -r "$builddir/Documentation"
