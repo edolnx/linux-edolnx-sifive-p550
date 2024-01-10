@@ -17,6 +17,11 @@ $ cd pkgbuild-linux-cwt-starfive-visionfive2
 $ makepkg
 ```
 
+> [!WARNING]
+> The Docker building method is deprecated. While the process will run faster,
+> it will leave some x86_64 binaries in the kernel source tree. This will cause
+> problems later when you want to build any out-of-tree driver.
+
 Alternatively, you can build the kernel on any x86_64 PC via Docker or Podman.
 Assuming your userid (`id -u`) is 1000, which is the default id for the first
 non-root user on many other Linux distros, follow these steps:
