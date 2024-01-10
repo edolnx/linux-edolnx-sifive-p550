@@ -24,6 +24,7 @@ source=("https://github.com/starfive-tech/linux/archive/refs/tags/${_tag}.tar.gz
   'linux-5-fix_CVE-2022-0847_DirtyPipe.patch'
   'linux-7-constify_struct_dh_pointer_members.patch'
   'linux-8-fix_broken_gpu-drm-i2c-tda998x.patch'
+  'linux-9-fix_promisc_ethernet_driver_armbian.patch'
   'config'
   'linux.preset'
   '90-linux.hook'
@@ -43,6 +44,7 @@ sha256sums=('f66954d2cca0db1d05faa3ca42d6c75d5b8cf77f9c7ed84c54b5e05b0a7043cd'
             '725875c1d8c7bf93cadfbceedcdfaa4062661b2deeb70a75852b87cff1d50831'
             '01cf756c307a4aeda0b8c940340b75759f00ec712b9ccc217889c6ea8f94f59e'
             'a5955ef6043e89080be902f9133f56fbeb78919fa7b45d4decb9191875217897'
+            '36d71755ec52d43065a0c7e83d4eb1a7609f03dffea58dfd03b8ce8ba959823b'
             '221bfcba5c4aa1763a9fb1e60b69a81eef9fc4941d6a57778e3bfd4da69700fc'
             '7601eb46dec607aa3e66bd756db8080302ef58b35cc35dd124e14c0bea2a8cb1'
             'bac26cf387b12e7c11e25fdafb4f3792f041f0bf42f6b3af96d5255e077ab490'
@@ -52,6 +54,7 @@ sha256sums=('f66954d2cca0db1d05faa3ca42d6c75d5b8cf77f9c7ed84c54b5e05b0a7043cd'
             'e3a433213762785a64af39f22cc6a82f9717c8eb3d27b846b20e21f290eb965c'
             'fe7ed2b042006b10e1b057391cc8f12c609259330204b668152ff88950e3deae'
             '3d65589915b56de000ae7c93f5d7fbc9cf747891a45b69559ed92e03b95f692b')
+
 
 if [ "$(uname -m)" = "riscv64" ]; then
   _target=""
