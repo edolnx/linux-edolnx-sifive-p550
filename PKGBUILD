@@ -3,9 +3,9 @@
 pkgbase=linux-cwt-515-starfive-vf2
 _old_pkgbase=linux-cwt-515-starfive-visionfive2
 _variant=cwt #5.15-VF2-xxx-x
-pkgver=5.10.3
-epoch=20 #Based on cwt image version
-pkgrel=2
+pkgver=5.11.3
+epoch=21 #Based on cwt image version
+pkgrel=1
 _tag=JH7110_VF2_515_v${pkgver}
 _desc='Linux 5.15.x (-cwt) for StarFive RISC-V VisionFive 2 Board'
 _srcname=linux-$_tag
@@ -25,6 +25,7 @@ source=("https://github.com/starfive-tech/linux/archive/refs/tags/${_tag}.tar.gz
   'linux-7-constify_struct_dh_pointer_members.patch'
   'linux-8-fix_broken_gpu-drm-i2c-tda998x.patch'
   'linux-9-fix_promisc_ethernet_driver_armbian.patch'
+  'linux-10-fix_unknown_relocation_type_57.patch'
   'config'
   'linux.preset'
   '90-linux.hook'
@@ -35,7 +36,7 @@ source=("https://github.com/starfive-tech/linux/archive/refs/tags/${_tag}.tar.gz
   '91-soft_3rdpart.hook'
   '91-soft_3rdpart.rules')
 
-sha256sums=('f66954d2cca0db1d05faa3ca42d6c75d5b8cf77f9c7ed84c54b5e05b0a7043cd'
+sha256sums=('eb07915e76fc40c994d5a87933fc6b268ea8d26d82582e84f82899e2c015fa6f'
             '3bd9dc1b0843b77b51b269ad2ca30895121d94a6993f149496a7c9a83e08b369'
             '1582369c7a9365d98a03e08d0dbe8e0affc9417672f00aa57d6957ba559da878'
             'e16e2f8eafe310a561a553d8e2af16af7a50d2c499221d0b9348a94aea571dfa'
@@ -45,14 +46,15 @@ sha256sums=('f66954d2cca0db1d05faa3ca42d6c75d5b8cf77f9c7ed84c54b5e05b0a7043cd'
             '01cf756c307a4aeda0b8c940340b75759f00ec712b9ccc217889c6ea8f94f59e'
             'a5955ef6043e89080be902f9133f56fbeb78919fa7b45d4decb9191875217897'
             '36d71755ec52d43065a0c7e83d4eb1a7609f03dffea58dfd03b8ce8ba959823b'
-            '221bfcba5c4aa1763a9fb1e60b69a81eef9fc4941d6a57778e3bfd4da69700fc'
+            '96c124eb130f28638b3f1ed2ee20784cfbd7e116b7b759674948c81c63b53c92'
+            'ae28c4076ef8f58e99149154da196439f85da90f1bc118e0afc19c159c29949e'
             '7601eb46dec607aa3e66bd756db8080302ef58b35cc35dd124e14c0bea2a8cb1'
-            '899958e16fb6df347c87fc3ef2846e1029eee532c672b18803584b7cfcf6125a'
-            '0d971ff674f8927ff816380424d626af3cf85e753f3709591eb62a52acb4c1fd'
+            'e2e9c019aca4ed7a88f86178aeba8008a46e782458e90db63eafed2a132dfb68'
+            'f5466225021fbe4e983cc85f32ce11d92ad30689b18e0d1390d16f6bfab74477'
             '2492020565e8e6157876c2bee48af32dd3fc7967bd418fe6d2d9d9ea0bb72bf1'
             '800e2ca5970c1869282f99f19994c7ad2cbb05a6f3e059d692e30746f2c9b577'
             'e3a433213762785a64af39f22cc6a82f9717c8eb3d27b846b20e21f290eb965c'
-            '129e67e8726008168e0c358d4e1331fc618579f5963974f68ce15350f8348c02'
+            '14b6de9dcfd92544a48f5509a7ef8796c23a4ce489a47597462a281189699f9c'
             '3d65589915b56de000ae7c93f5d7fbc9cf747891a45b69559ed92e03b95f692b')
 
 
