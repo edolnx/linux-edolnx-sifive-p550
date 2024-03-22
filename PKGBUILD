@@ -16,22 +16,22 @@ license=('GPL2')
 makedepends=(bc libelf pahole cpio perl tar xz clang lld llvm)
 options=('!strip')
 source=("https://github.com/starfive-tech/linux/archive/refs/tags/${_tag}.tar.gz"
-  'linux-0-5.15.0-5.15.2.patch'
-  'linux-1-Revert-fbcon-Disable_accelerated_scrolling.patch'
-  'linux-2-fbcon-Add_option_to_enable_legacy_hardware_acceleration.patch'
-  'linux-3-riscv-zba_zbb.patch'
-  'linux-4-eswin_6600u-llvm.patch'
-  'linux-5-fix_CVE-2022-0847_DirtyPipe.patch'
-  'linux-7-constify_struct_dh_pointer_members.patch'
-  'linux-8-fix_broken_gpu-drm-i2c-tda998x.patch'
-  'linux-9-fix_promisc_ethernet_driver_armbian.patch'
+  'linux-00-5.15.0-5.15.2.patch'
+  'linux-01-Revert-fbcon-Disable_accelerated_scrolling.patch'
+  'linux-02-fbcon-Add_option_to_enable_legacy_hardware_acceleration.patch'
+  'linux-03-riscv-zba_zbb.patch'
+  'linux-04-eswin_6600u-llvm.patch'
+  'linux-05-fix_CVE-2022-0847_DirtyPipe.patch'
+  'linux-07-constify_struct_dh_pointer_members.patch'
+  'linux-08-fix_broken_gpu-drm-i2c-tda998x.patch'
+  'linux-09-fix_promisc_ethernet_driver_armbian.patch'
   'linux-10-fix_unknown_relocation_type_57.patch'
   'config'
   'linux.preset'
   '90-linux.hook'
   "${_3rdpart}.tar.gz::https://github.com/starfive-tech/soft_3rdpart/archive/refs/tags/${_tag}.tar.gz"
-  'soft_3rdpart-0-correct_kernel_source_dir.patch'
-  'soft_3rdpart-1-use_clang_for_llvm.patch'
+  'soft_3rdpart-00-correct_kernel_source_dir.patch'
+  'soft_3rdpart-01-use_clang_for_llvm.patch'
   'soft_3rdpart-modules.conf'
   '91-soft_3rdpart.hook'
   '91-soft_3rdpart.rules')
