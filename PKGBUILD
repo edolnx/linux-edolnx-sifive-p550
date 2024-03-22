@@ -5,7 +5,7 @@ _old_pkgbase=linux-cwt-515-starfive-visionfive2
 _variant=cwt #5.15-VF2-xxx-x
 pkgver=5.11.3
 epoch=21 #Based on cwt image version
-pkgrel=1
+pkgrel=2
 _tag=JH7110_VF2_515_v${pkgver}
 _desc='Linux 5.15.x (-cwt) for StarFive RISC-V VisionFive 2 Board'
 _srcname=linux-$_tag
@@ -13,7 +13,7 @@ _3rdpart=soft_3rdpart-$_tag
 url="https://github.com/starfive-tech/linux/"
 arch=(riscv64)
 license=('GPL2')
-makedepends=(bc libelf pahole cpio perl tar xz clang lld llvm)
+makedepends=(bc libelf pahole cpio perl tar xz gcc)
 options=('!strip')
 source=("https://github.com/starfive-tech/linux/archive/refs/tags/${_tag}.tar.gz"
   'linux-00-5.15.0-5.15.2.patch'
@@ -47,7 +47,7 @@ sha256sums=('eb07915e76fc40c994d5a87933fc6b268ea8d26d82582e84f82899e2c015fa6f'
             'a5955ef6043e89080be902f9133f56fbeb78919fa7b45d4decb9191875217897'
             '36d71755ec52d43065a0c7e83d4eb1a7609f03dffea58dfd03b8ce8ba959823b'
             '96c124eb130f28638b3f1ed2ee20784cfbd7e116b7b759674948c81c63b53c92'
-            'ae28c4076ef8f58e99149154da196439f85da90f1bc118e0afc19c159c29949e'
+            '8ae150b8e7c07a889c63928463692f4811da246de096342bf0c28c6d022f19f0'
             '7601eb46dec607aa3e66bd756db8080302ef58b35cc35dd124e14c0bea2a8cb1'
             'e2e9c019aca4ed7a88f86178aeba8008a46e782458e90db63eafed2a132dfb68'
             'f5466225021fbe4e983cc85f32ce11d92ad30689b18e0d1390d16f6bfab74477'
@@ -57,12 +57,6 @@ sha256sums=('eb07915e76fc40c994d5a87933fc6b268ea8d26d82582e84f82899e2c015fa6f'
             '14b6de9dcfd92544a48f5509a7ef8796c23a4ce489a47597462a281189699f9c'
             '3d65589915b56de000ae7c93f5d7fbc9cf747891a45b69559ed92e03b95f692b')
 
-
-if [ "$(uname -m)" = "riscv64" ]; then
-  _target=""
-else
-  _target="--target=riscv64"
-fi
 
 prepare() {
   cd $_srcname
@@ -81,10 +75,10 @@ prepare() {
 
   echo "Setting config..."
   cp ../config .config
-  make -j $(nproc) LLVM=1 ARCH=riscv CC="clang ${_target} -mcpu=sifive-u74 -mtune=sifive-7-series" olddefconfig
+  make -j $(nproc) ARCH=riscv CC="gcc -mcpu=sifive-u74 -mtune=sifive-7-series" olddefconfig
   cp .config ../../config.new
 
-  make -j $(nproc) LLVM=1 ARCH=riscv CC="clang ${_target} -mcpu=sifive-u74 -mtune=sifive-7-series" -s kernelrelease >version
+  make -j $(nproc) ARCH=riscv CC="gcc -mcpu=sifive-u74 -mtune=sifive-7-series" -s kernelrelease >version
   echo "Prepared $pkgbase version $(<version)"
 
   cd $srcdir/$_3rdpart
@@ -98,19 +92,19 @@ prepare() {
 
 build() {
   cd $_srcname
-  make -j $(nproc) LLVM=1 ARCH=riscv CC="clang ${_target} -mcpu=sifive-u74 -mtune=sifive-7-series" all
+  make -j $(nproc) ARCH=riscv CC="gcc -mcpu=sifive-u74 -mtune=sifive-7-series" all
 
   # JPU
   cd $srcdir/$_3rdpart/codaj12/jdi/linux/driver
-  make -j $(nproc) LLVM=1 ARCH=riscv CC="clang ${_target} -mcpu=sifive-u74 -mtune=sifive-7-series" KERNELDIR=$srcdir/$_srcname
+  make -j $(nproc) ARCH=riscv CC="gcc -mcpu=sifive-u74 -mtune=sifive-7-series" KERNELDIR=$srcdir/$_srcname
 
   # VENC
   cd $srcdir/$_3rdpart/wave420l/code/vdi/linux/driver
-  make -j $(nproc) LLVM=1 ARCH=riscv CC="clang ${_target} -mcpu=sifive-u74 -mtune=sifive-7-series" KERNELDIR=$srcdir/$_srcname
+  make -j $(nproc) ARCH=riscv CC="gcc -mcpu=sifive-u74 -mtune=sifive-7-series" KERNELDIR=$srcdir/$_srcname
 
   # VDEC
   cd $srcdir/$_3rdpart/wave511/code/vdi/linux/driver
-  make -j $(nproc) LLVM=1 ARCH=riscv CC="clang ${_target} -mcpu=sifive-u74 -mtune=sifive-7-series" KERNELDIR=$srcdir/$_srcname
+  make -j $(nproc) ARCH=riscv CC="gcc -mcpu=sifive-u74 -mtune=sifive-7-series" KERNELDIR=$srcdir/$_srcname
 }
 
 _package() {
@@ -130,11 +124,11 @@ _package() {
   install -Dm644 "arch/riscv/boot/Image.gz" "$pkgdir/boot/vmlinuz"
 
   echo "Installing modules..."
-  make -j $(nproc) LLVM=1 ARCH=riscv INSTALL_MOD_PATH="$pkgdir/usr" INSTALL_MOD_STRIP=1 modules_install
+  make -j $(nproc) ARCH=riscv INSTALL_MOD_PATH="$pkgdir/usr" INSTALL_MOD_STRIP=1 modules_install
 
   echo "Installing dtbs..."
-  make -j $(nproc) LLVM=1 ARCH=riscv INSTALL_DTBS_PATH="$pkgdir/usr/share/dtbs/$kernver" dtbs_install
-  make -j $(nproc) LLVM=1 ARCH=riscv INSTALL_DTBS_PATH="$pkgdir/boot/dtbs/" dtbs_install
+  make -j $(nproc) ARCH=riscv INSTALL_DTBS_PATH="$pkgdir/usr/share/dtbs/$kernver" dtbs_install
+  make -j $(nproc) ARCH=riscv INSTALL_DTBS_PATH="$pkgdir/boot/dtbs/" dtbs_install
 
   # remove build links
   rm "$modulesdir"/build
