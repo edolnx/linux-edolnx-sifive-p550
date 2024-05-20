@@ -1,13 +1,12 @@
 # Maintainer: Chaiwat Suttipongsakul <cwt@bashell.com>
 
-pkgbase=linux-cwt-515-starfive-vf2
-_old_pkgbase=linux-cwt-515-starfive-visionfive2
-_variant=cwt #5.15-VF2-xxx-x
-pkgver=5.11.3
-epoch=21 #Based on cwt image version
-pkgrel=2
-_tag=JH7110_VF2_515_v${pkgver}
-_desc='Linux 5.15.x (-cwt) for StarFive RISC-V VisionFive 2 Board'
+pkgbase=linux-cwt-6.6-starfive-vf2
+_variant=cwt #6.6-VF2-xxx-x
+pkgver=5.12.0
+epoch=22 #Based on cwt image version
+pkgrel=1
+_tag=JH7110_VF2_6.6_v${pkgver}
+_desc='Linux 6.6.x (-cwt) for StarFive RISC-V VisionFive 2 Board'
 _srcname=linux-$_tag
 _3rdpart=soft_3rdpart-$_tag
 url="https://github.com/starfive-tech/linux/"
@@ -16,16 +15,13 @@ license=('GPL2')
 makedepends=(bc libelf pahole cpio perl tar xz gcc)
 options=('!strip')
 source=("https://github.com/starfive-tech/linux/archive/refs/tags/${_tag}.tar.gz"
-  'linux-00-5.15.0-5.15.2.patch'
-  'linux-01-Revert-fbcon-Disable_accelerated_scrolling.patch'
-  'linux-02-fbcon-Add_option_to_enable_legacy_hardware_acceleration.patch'
-  'linux-03-riscv-zba_zbb.patch'
-  'linux-04-eswin_6600u-llvm.patch'
-  'linux-05-fix_CVE-2022-0847_DirtyPipe.patch'
-  'linux-07-constify_struct_dh_pointer_members.patch'
-  'linux-08-fix_broken_gpu-drm-i2c-tda998x.patch'
-  'linux-09-fix_promisc_ethernet_driver_armbian.patch'
-  'linux-10-fix_unknown_relocation_type_57.patch'
+  'linux-01-riscv-zba_zbb.patch'
+  'linux-02-eswin_6600u-llvm.patch'
+  'linux-03-eswin_6600u-cast_null_as_unsigned_int.patch'
+  'linux-04-fix_broken_gpu-drm-i2c-tda998x.patch'
+  'linux-05-fix_img_gpu_secondary_notintermediate_conflict.patch'
+  'linux-06-fix_drm_img_rogue_buffer_overflow.patch'
+  'linux-07-fix_starfive_v4l2_for_6.6_kernel.patch'
   'config'
   'linux.preset'
   '90-linux.hook'
@@ -36,39 +32,35 @@ source=("https://github.com/starfive-tech/linux/archive/refs/tags/${_tag}.tar.gz
   '91-soft_3rdpart.hook'
   '91-soft_3rdpart.rules')
 
-sha256sums=('eb07915e76fc40c994d5a87933fc6b268ea8d26d82582e84f82899e2c015fa6f'
-            '3bd9dc1b0843b77b51b269ad2ca30895121d94a6993f149496a7c9a83e08b369'
-            '1582369c7a9365d98a03e08d0dbe8e0affc9417672f00aa57d6957ba559da878'
-            'e16e2f8eafe310a561a553d8e2af16af7a50d2c499221d0b9348a94aea571dfa'
-            'ef2196f0626265198454972dce9e873b620382465b4e66380de6506ccfc564d0'
+sha256sums=('050391bf5fcfe3c9ed84737f0a4fe0ad3a35bd6b4eec6d6b490dd3ed1c188f22'
+            '963d4d223a225909b2fe34f68a41859dcfba83fa0191566d492d713ce3526f85'
             'bcd1f14392af6adce2760c36a7d1b631c60a4f590bf1241934c401187ba1b40e'
-            '725875c1d8c7bf93cadfbceedcdfaa4062661b2deeb70a75852b87cff1d50831'
-            '01cf756c307a4aeda0b8c940340b75759f00ec712b9ccc217889c6ea8f94f59e'
-            'a5955ef6043e89080be902f9133f56fbeb78919fa7b45d4decb9191875217897'
-            '36d71755ec52d43065a0c7e83d4eb1a7609f03dffea58dfd03b8ce8ba959823b'
-            '96c124eb130f28638b3f1ed2ee20784cfbd7e116b7b759674948c81c63b53c92'
-            '8ae150b8e7c07a889c63928463692f4811da246de096342bf0c28c6d022f19f0'
+            'af7b07379df72053a5769706015574d520a6bd93f7566567d5f4b2b19aca3e3d'
+            'ca3faa917b3592ecd2b1e38f6f3821d97e9e664752b93ce67e0ebd23ff83695a'
+            '4b06e7046e238795ef19dc46d8e339d6de1d554183d2101d7df8bd1c2c68c9ad'
+            'c90ef5ae2edf595497e23050b6680ca15b1cf399fc85a322c1b3bed11dbfb368'
+            'd6ec3a247ab996553871532b3826b5005664e9234434468f6dc823ded5daff78'
+            '7b4b067f7bd90e5bd32b9b646b289d0b9aca56d60e45602b0908b661be93981a'
             '7601eb46dec607aa3e66bd756db8080302ef58b35cc35dd124e14c0bea2a8cb1'
-            'e2e9c019aca4ed7a88f86178aeba8008a46e782458e90db63eafed2a132dfb68'
-            'f5466225021fbe4e983cc85f32ce11d92ad30689b18e0d1390d16f6bfab74477'
+            'b137c71c1df6c58947e3b06767dec24b9efd05a81749ccff13b083a9d0d12d55'
+            '63fc05b6cedc9eed445adcfe39c5f2c8d2ed46049f626212e31fd87bdba6f9e6'
             '2492020565e8e6157876c2bee48af32dd3fc7967bd418fe6d2d9d9ea0bb72bf1'
             '800e2ca5970c1869282f99f19994c7ad2cbb05a6f3e059d692e30746f2c9b577'
             'e3a433213762785a64af39f22cc6a82f9717c8eb3d27b846b20e21f290eb965c'
-            '14b6de9dcfd92544a48f5509a7ef8796c23a4ce489a47597462a281189699f9c'
+            'c778f0af03eca8c425936198798f2b2037e5f63d89b0155e3da42f7983dfa0c6'
             '3d65589915b56de000ae7c93f5d7fbc9cf747891a45b69559ed92e03b95f692b')
 
 
 prepare() {
   cd $_srcname
 
-  local src
-  for src in $(ls ../linux-*.patch); do
-    echo "Applying patch $src..."
-    patch -Np1 <"../$src"
-  done
+  #local src
+  #for src in $(ls ../linux-*.patch); do
+  #  echo "Applying patch $src..."
+  #  patch -Np1 <"../$src"
+  #done
 
   echo "Setting version..."
-  scripts/setlocalversion --save-scmversion
   echo "-${_variant}" >localversion.10-variant
   echo "-${pkgver}" >localversion.20-pkgver
   echo "-$pkgrel" >localversion.30-pkgrel
@@ -112,7 +104,7 @@ _package() {
   depends=(coreutils kmod mkinitcpio)
   optdepends=('wireless-regdb: to set the correct wireless channels of your country'
     'linux-firmware: firmware images needed for some devices')
-  provides=("linux=${pkgver}" "WIREGUARD-MODULE" "${_old_pkgbase}")
+  provides=("linux=${pkgver}" "WIREGUARD-MODULE")
   conflicts=('linux')
 
   cd $_srcname
@@ -141,8 +133,6 @@ _package-soft_3rdpart() {
   pkgdesc="The soft third part modules for the $_desc kernel"
   depends=('img-gpu-vf2=1.19.6345021')
   license=('proprietary')
-  provides=("${_old_pkgbase}-soft_3rdpart")
-  conflicts=("${_old_pkgbase}-soft_3rdpart")
 
   echo "Installing Soft 3rd Part..."
 
@@ -197,7 +187,7 @@ _package-soft_3rdpart() {
 _package-headers() {
   pkgdesc="Headers and scripts for building modules for the $_desc kernel"
   depends=(pahole)
-  provides=("linux-headers=${pkgver}" "${_old_pkgbase}-headers")
+  provides=("linux-headers=${pkgver}")
   conflicts=('linux-headers')
 
   cd $_srcname
