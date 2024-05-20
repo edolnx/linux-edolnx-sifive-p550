@@ -54,11 +54,11 @@ sha256sums=('050391bf5fcfe3c9ed84737f0a4fe0ad3a35bd6b4eec6d6b490dd3ed1c188f22'
 prepare() {
   cd $_srcname
 
-  #local src
-  #for src in $(ls ../linux-*.patch); do
-  #  echo "Applying patch $src..."
-  #  patch -Np1 <"../$src"
-  #done
+  local src
+  for src in $(ls ../linux-*.patch); do
+    echo "Applying patch $src..."
+    patch -Np1 <"../$src"
+  done
 
   echo "Setting version..."
   echo "-${_variant}" >localversion.10-variant
