@@ -24,9 +24,14 @@ RUN pacman -Syu --noconfirm \
       patch \
       llvm \
       pacman-contrib \
+      riscv64-linux-gnu-gcc \
+      riscv64-linux-gnu-binutils \
+      riscv64-linux-gnu-glibc \
  && pacman -Sc --noconfirm
 
 RUN groupadd user \
  && useradd -g user -G root -m user
+
+WORKDIR /build/
 
 ADD makepkg.conf /etc/makepkg.conf
