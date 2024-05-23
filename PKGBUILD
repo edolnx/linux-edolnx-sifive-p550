@@ -67,10 +67,10 @@ prepare() {
 
   echo "Setting config..."
   cp ../config .config
-  make -j $(nproc) ARCH=riscv CC="gcc -mcpu=sifive-u74 -mtune=sifive-7-series" olddefconfig
+  make -j $(nproc) ARCH=riscv CC="${CROSS_COMPILE:-}gcc -mcpu=sifive-u74 -mtune=sifive-7-series" olddefconfig
   cp .config ../../config.new
 
-  make -j $(nproc) ARCH=riscv CC="gcc -mcpu=sifive-u74 -mtune=sifive-7-series" -s kernelrelease >version
+  make -j $(nproc) ARCH=riscv CC="${CROSS_COMPILE:-}gcc -mcpu=sifive-u74 -mtune=sifive-7-series" -s kernelrelease >version
   echo "Prepared $pkgbase version $(<version)"
 
   cd $srcdir/$_3rdpart
@@ -84,19 +84,19 @@ prepare() {
 
 build() {
   cd $_srcname
-  make -j $(nproc) ARCH=riscv CC="gcc -mcpu=sifive-u74 -mtune=sifive-7-series" all
+  make -j $(nproc) ARCH=riscv CC="${CROSS_COMPILE:-}gcc -mcpu=sifive-u74 -mtune=sifive-7-series" all
 
   # JPU
   cd $srcdir/$_3rdpart/codaj12/jdi/linux/driver
-  make -j $(nproc) ARCH=riscv CC="gcc -mcpu=sifive-u74 -mtune=sifive-7-series" KERNELDIR=$srcdir/$_srcname
+  make -j $(nproc) ARCH=riscv CC="${CROSS_COMPILE:-}gcc -mcpu=sifive-u74 -mtune=sifive-7-series" KERNELDIR=$srcdir/$_srcname
 
   # VENC
   cd $srcdir/$_3rdpart/wave420l/code/vdi/linux/driver
-  make -j $(nproc) ARCH=riscv CC="gcc -mcpu=sifive-u74 -mtune=sifive-7-series" KERNELDIR=$srcdir/$_srcname
+  make -j $(nproc) ARCH=riscv CC="${CROSS_COMPILE:-}gcc -mcpu=sifive-u74 -mtune=sifive-7-series" KERNELDIR=$srcdir/$_srcname
 
   # VDEC
   cd $srcdir/$_3rdpart/wave511/code/vdi/linux/driver
-  make -j $(nproc) ARCH=riscv CC="gcc -mcpu=sifive-u74 -mtune=sifive-7-series" KERNELDIR=$srcdir/$_srcname
+  make -j $(nproc) ARCH=riscv CC="${CROSS_COMPILE:-}gcc -mcpu=sifive-u74 -mtune=sifive-7-series" KERNELDIR=$srcdir/$_srcname
 }
 
 _package() {
