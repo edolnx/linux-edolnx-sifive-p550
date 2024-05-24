@@ -4,7 +4,7 @@ pkgbase=linux-cwt-6.6-starfive-vf2
 _variant=cwt #6.6-VF2-xxx-x
 pkgver=5.12.0
 epoch=22 #Based on cwt image version
-pkgrel=1
+pkgrel=2
 _tag=JH7110_VF2_6.6_v${pkgver}
 _desc='Linux 6.6.x (-cwt) for StarFive RISC-V VisionFive 2 Board'
 _srcname=linux-$_tag
@@ -259,13 +259,13 @@ _package-headers() {
   while read -rd '' file; do
     case "$(file -bi "$file")" in
     application/x-sharedlib\;*) # Libraries (.so)
-      llvm-strip -v $STRIP_SHARED "$file" ;;
+      strip -v $STRIP_SHARED "$file" ;;
     application/x-archive\;*) # Libraries (.a)
-      llvm-strip -v $STRIP_STATIC "$file" ;;
+      strip -v $STRIP_STATIC "$file" ;;
     application/x-executable\;*) # Binaries
-      llvm-strip -v $STRIP_BINARIES "$file" ;;
+      strip -v $STRIP_BINARIES "$file" ;;
     application/x-pie-executable\;*) # Relocatable binaries
-      llvm-strip -v $STRIP_SHARED "$file" ;;
+      strip -v $STRIP_SHARED "$file" ;;
     esac
   done < <(find "$builddir" -type f -perm -u+x ! -name vmlinux -print0)
 
