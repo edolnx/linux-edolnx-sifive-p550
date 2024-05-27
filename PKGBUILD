@@ -4,7 +4,7 @@ pkgbase=linux-cwt-6.6-starfive-vf2
 _variant=cwt #6.6-VF2-xxx-x
 pkgver=5.12.0
 epoch=22 #Based on cwt image version
-pkgrel=2
+pkgrel=3
 _tag=JH7110_VF2_6.6_v${pkgver}
 _desc='Linux 6.6.x (-cwt) for StarFive RISC-V VisionFive 2 Board'
 _srcname=linux-$_tag
@@ -40,14 +40,14 @@ sha256sums=('050391bf5fcfe3c9ed84737f0a4fe0ad3a35bd6b4eec6d6b490dd3ed1c188f22'
             '4b06e7046e238795ef19dc46d8e339d6de1d554183d2101d7df8bd1c2c68c9ad'
             'c90ef5ae2edf595497e23050b6680ca15b1cf399fc85a322c1b3bed11dbfb368'
             'd6ec3a247ab996553871532b3826b5005664e9234434468f6dc823ded5daff78'
-            '868d81a5e4b7d8a597c25e6bcb9c48902034d2bea5be3159f195cd439fb63d6a'
+            '681002493110e4e4cb462fa19bdf66ca96474657988aa1e03e9ed7640f4d7227'
             '7601eb46dec607aa3e66bd756db8080302ef58b35cc35dd124e14c0bea2a8cb1'
-            'bde508faf6f435c946c40e88b78c7bb7ee1e56507fc8a6dce12383641a69888b'
+            '0957e25b26905edba99d1d1fe4e109b3fd94b99f52757404dd59fb9c048cb13c'
             '63fc05b6cedc9eed445adcfe39c5f2c8d2ed46049f626212e31fd87bdba6f9e6'
             '2492020565e8e6157876c2bee48af32dd3fc7967bd418fe6d2d9d9ea0bb72bf1'
             '800e2ca5970c1869282f99f19994c7ad2cbb05a6f3e059d692e30746f2c9b577'
             'e3a433213762785a64af39f22cc6a82f9717c8eb3d27b846b20e21f290eb965c'
-            '7a1a94a4d70c39358db2870e7a8fa55d1ad9cfa67be94673f963933ef697eb6a'
+            'e5af376ac0f25ca85ca226f5b9bc8dd77fb8a61503a7c13498aad0c3dee3a3b3'
             '3d65589915b56de000ae7c93f5d7fbc9cf747891a45b69559ed92e03b95f692b')
 
 
@@ -259,13 +259,13 @@ _package-headers() {
   while read -rd '' file; do
     case "$(file -bi "$file")" in
     application/x-sharedlib\;*) # Libraries (.so)
-      ${CROSS_COMPILE:-}strip -v $STRIP_SHARED "$file" ;;
+      strip -v $STRIP_SHARED "$file" ;;
     application/x-archive\;*) # Libraries (.a)
-      ${CROSS_COMPILE:-}strip -v $STRIP_STATIC "$file" ;;
+      strip -v $STRIP_STATIC "$file" ;;
     application/x-executable\;*) # Binaries
-      ${CROSS_COMPILE:-}strip -v $STRIP_BINARIES "$file" ;;
+      strip -v $STRIP_BINARIES "$file" ;;
     application/x-pie-executable\;*) # Relocatable binaries
-      ${CROSS_COMPILE:-}strip -v $STRIP_SHARED "$file" ;;
+      strip -v $STRIP_SHARED "$file" ;;
     esac
   done < <(find "$builddir" -type f -perm -u+x ! -name vmlinux -print0)
 

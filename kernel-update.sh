@@ -2,7 +2,7 @@
 
 IMG=cwt22
 SDK=5.12.0
-REL=2
+REL=3
 
 mkdir ${IMG}-${SDK}-${REL}
 cd ${IMG}-${SDK}-${REL}
