@@ -4,7 +4,7 @@ pkgbase=linux-cwt-6.6-starfive-vf2
 _variant=cwt #6.6-VF2-xxx-x
 pkgver=5.12.0
 epoch=22 #Based on cwt image version
-pkgrel=3
+pkgrel=4
 _tag=JH7110_VF2_6.6_v${pkgver}
 _desc='Linux 6.6.x (-cwt) for StarFive RISC-V VisionFive 2 Board'
 _srcname=linux-$_tag
@@ -22,6 +22,18 @@ source=("https://github.com/starfive-tech/linux/archive/refs/tags/${_tag}.tar.gz
   'linux-05-fix_img_gpu_secondary_notintermediate_conflict.patch'
   'linux-06-fix_drm_img_rogue_buffer_overflow.patch'
   'linux-07-fix_starfive_v4l2_for_6.6_kernel.patch'
+  'https://cdn.kernel.org/pub/linux/kernel/v6.x/incr/patch-6.6.20-21.xz'
+  'https://cdn.kernel.org/pub/linux/kernel/v6.x/incr/patch-6.6.21-22.xz'
+  'https://cdn.kernel.org/pub/linux/kernel/v6.x/incr/patch-6.6.22-23.xz'
+  'https://cdn.kernel.org/pub/linux/kernel/v6.x/incr/patch-6.6.23-24.xz'
+  'https://cdn.kernel.org/pub/linux/kernel/v6.x/incr/patch-6.6.24-25.xz'
+  'https://cdn.kernel.org/pub/linux/kernel/v6.x/incr/patch-6.6.25-26.xz'
+  'https://cdn.kernel.org/pub/linux/kernel/v6.x/incr/patch-6.6.26-27.xz'
+  'https://cdn.kernel.org/pub/linux/kernel/v6.x/incr/patch-6.6.27-28.xz'
+  'https://cdn.kernel.org/pub/linux/kernel/v6.x/incr/patch-6.6.28-29.xz'
+  'https://cdn.kernel.org/pub/linux/kernel/v6.x/incr/patch-6.6.29-30.xz'
+  'https://cdn.kernel.org/pub/linux/kernel/v6.x/incr/patch-6.6.30-31.xz'
+  'https://cdn.kernel.org/pub/linux/kernel/v6.x/incr/patch-6.6.31-32.xz'
   'config'
   'linux.preset'
   '90-linux.hook'
@@ -40,14 +52,26 @@ sha256sums=('050391bf5fcfe3c9ed84737f0a4fe0ad3a35bd6b4eec6d6b490dd3ed1c188f22'
             '4b06e7046e238795ef19dc46d8e339d6de1d554183d2101d7df8bd1c2c68c9ad'
             'c90ef5ae2edf595497e23050b6680ca15b1cf399fc85a322c1b3bed11dbfb368'
             'd6ec3a247ab996553871532b3826b5005664e9234434468f6dc823ded5daff78'
-            '66aae6fd9f106e72716bd3d2631e30a0fc3401e365d56a9d9dcd7682cb7c7f88'
+            '7dbc8df59a3342c76bf63ac0889b290de530d7348ba1d0249e72af9d2951c69f'
+            'd3ad1c3c9071953b3f4f1d13652f43dbba2770cbbe10538fae69f448cb2187ec'
+            'ac94d0654258cd509136e5a238c8947ea961d83a1a025d8d454c2984c25d91ed'
+            'a6f2d4d87a653d366d29bd69bb4b6833c9886e1a7c72bbc8bed0f5500acd3bee'
+            '73879028ef768dfcd22ff1c9feb7a31647a96e3a4c1db68d28f036ef8b0d3cc0'
+            '6a3f905225c69b766ab0596cfb77204563654a93fe5bed7e83ce05f3aab4f0a7'
+            '399cd683978a66061ed4ae9717dd64e306ab353c4f7666068201d5d51736e099'
+            '86aee10aa0118efe0c5ad31c762d1a5f5eee9055071aa2f564d088f8cf922b9f'
+            '55213bbcc337578217bc4e956897a3673f30c73ec39c958b7a0bb6e617602fba'
+            'd7607f51250ea67ff236f003bbb7767b3683ea2ea242788781866431605fb4ba'
+            'b79aea35d2765b0adf7c1d2bc1f9ce89d431597aeaa3d3bc6d05ef98f51da7fa'
+            '04ef1145de730a4cccbfd4d5f0817378d5348e1ad137a19ff344c6ba5efcfc40'
+            '411db0f414dd12bcd5b8d7ef17eb6768016001723c788d0b6eb59a2e0a797712'
             '7601eb46dec607aa3e66bd756db8080302ef58b35cc35dd124e14c0bea2a8cb1'
-            '0957e25b26905edba99d1d1fe4e109b3fd94b99f52757404dd59fb9c048cb13c'
+            'bd9ee6009806be49e6cb2bb6cc7f7c13dc79ad2f902811417c750266edd70f37'
             '63fc05b6cedc9eed445adcfe39c5f2c8d2ed46049f626212e31fd87bdba6f9e6'
             '2492020565e8e6157876c2bee48af32dd3fc7967bd418fe6d2d9d9ea0bb72bf1'
             '800e2ca5970c1869282f99f19994c7ad2cbb05a6f3e059d692e30746f2c9b577'
             'e3a433213762785a64af39f22cc6a82f9717c8eb3d27b846b20e21f290eb965c'
-            'e5af376ac0f25ca85ca226f5b9bc8dd77fb8a61503a7c13498aad0c3dee3a3b3'
+            '77fc3d8abf7a874a7377ffe7f7f31c3f63ce2a42c238aabef467c089a5523729'
             '3d65589915b56de000ae7c93f5d7fbc9cf747891a45b69559ed92e03b95f692b')
 
 
@@ -59,6 +83,12 @@ prepare() {
     echo "Applying patch $src..."
     patch -Np1 <"../$src"
   done
+
+  for src in $(ls ../patch-*.xz); do
+    echo "Applying patch $src..."
+    xzcat "../$src" | patch -Np1
+  done
+
 
   echo "Setting version..."
   echo "-${_variant}" >localversion.10-variant
