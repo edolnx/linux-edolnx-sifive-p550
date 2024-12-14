@@ -1,35 +1,38 @@
-# Linux Kernel for StarFive VisionFive 2 Arch Linux Image
+# Linux Kernel for SiFive HiFive P550 Premier Arch Linux Image
 
 The `PKGBUILD` file in this repository is used to build the Linux kernel for
-the StarFive VisionFive 2 board running Arch Linux. The kernel source code is
-available at https://github.com/starfive-tech/linux/. The configuration is
-based on the previous version of
-[cwt images](https://forum.rvspace.org/t/arch-linux-image-for-visionfive-2/1459).
+the SiFive HiFive P550 Premier board running Arch Linux. The kernel source
+code is available at https://github.com/sifive/riscv-linux using the branch
+`dev/sholland/hifive-premier-p550-amdgpu`. The configuration is based on the 
+configuration that ships with the default OpenEmbedded image but enhanced to
+support zstd and xz initramfs and firmware images for broad OS compatibility.
+This also enables the radeon, amdgpu, and nouveau drivers. The patches to
+enable the I2C interface on the 40pin GPIO header are also included. There
+are also additional filesystems enabled (xfs, btrfs) as modules. Use of an
+initramfs is strongly recommended.
+
+## Notes on video support
+
+This kernel enables the Integrated Display Controller and GPU (iGPU). This
+has some unfavorable side effects: 
+ - There is a phantom 4K monitor
+ - The iGPU is always the primary
+ - Frequenly applications spawn on the phantom monitor
+ - Wayland doesn't work correctly
+ - 3D Accelleration has problems since the iGPU is not supported by mainline Mesa currently
+If your goal is to use a Dedicated GPU in the PCI-express slot (dGPU)
+then I suggest trying the dgpu variant of this kernel package at
+    https://github.com/edolnx/linux-edolnx-sifive-p550-dgpu
+That package does not have the iGPU drivers enabled (they cannot be built as modules).
 
 ## Building the Kernel
 
-The kernel can be built natively on the VisionFive 2 itself, just like any
+The kernel can be built natively on the P550 Premier itself, just like any
 other Arch package. Follow these steps to build the kernel:
 
 ```console
-$ git clone https://github.com/cwt-vf2/linux-cwt-starfive-vf2.git
-$ cd linux-cwt-starfive-vf2
+$ git clone https://github.com/edolnx/linux-edolnx-sifive-p550.git
+$ cd linux-edolnx-sifive-p550
 $ makepkg
 ```
 
-Alternatively, you can build the kernel on any x86_64 PC via Docker or Podman.
-Assuming your userid (`id -u`) is 1000, which is the default id for the first
-non-root user on many other Linux distros, follow these steps:
-
-```console
-$ git clone https://github.com/cwt-vf2/linux-cwt-starfive-vf2.git
-$ cd linux-cwt-starfive-vf2
-$ podman build -t vf2-arch-build docker
-```
-
-After building the podman or docker image, you can start building the kernel
-using the following commands:
-
-```console
-$ podman run --rm -it -v ./:/build/ --userns=keep-id --user=user vf2-arch-build sh -c "CROSS_COMPILE='riscv64-linux-gnu-' makepkg -s --config /build/docker/makepkg.conf"
-```
